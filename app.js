@@ -15,6 +15,16 @@ cron.schedule('0 0 * * *', async () => {
 });
 
 const PORT = process.env.PORT || 3000;
+
+app.get('/ping', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'App is running',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime().toFixed(2) + ' seconds',
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
