@@ -32,3 +32,4 @@ Thumbs.db
 # Miscellaneous
 *.swp
 *.swo
+/vendor
