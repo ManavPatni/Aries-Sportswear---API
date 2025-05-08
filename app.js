@@ -29,8 +29,7 @@ const PORT = process.env.PORT || 3000;
 app.get('/ping', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    code: 200,
-    message: 'pong'
+    code: 200
   });
 });
 
