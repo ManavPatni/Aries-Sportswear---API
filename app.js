@@ -35,6 +35,15 @@ app.get('/ping', (req, res) => {
   });
 });
 
+// Custom 404 handler for undefined routes
+app.use((req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: `Requested resource not found`,
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
