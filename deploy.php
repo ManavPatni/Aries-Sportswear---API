@@ -40,16 +40,16 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit('Invalid JSON payload');
 }
 
-// Check if event is a push or merge to main branch
+// Check if event is a push or merge to master branch
 $ref = $data['ref'] ?? '';
 $event = $headers['X-GitHub-Event'] ?? '';
-$isMainBranch = $ref === 'refs/heads/main';
-$isMerge = $event === 'push' && isset($data['commits']) && $isMainBranch;
+$isMasterBranch = $ref === 'refs/heads/master';
+$isMerge = $event === 'push' && isset($data['commits']) && $isMasterBranch;
 
-if ($isMainBranch && ($event === 'push' || $isMerge)) {
+if ($isMasterBranch && ($event === 'push' || $isMerge)) {
     // Run deployment script in background
     $output = shell_exec(__DIR__ . '/deploy.sh >> ' . $logFile . ' 2>&1 &');
     echo "Deployment triggered.";
 } else {
-    echo "Not main branch or not a push event.";
+    echo "Not master branch or not a push event.";
 }
