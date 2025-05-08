@@ -29,18 +29,17 @@ const PORT = process.env.PORT || 3000;
 app.get('/ping', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    message: 'App is running',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime().toFixed(2) + ' seconds',
+    code: 200,
+    message: 'pong'
   });
 });
 
 // Custom 404 handler for undefined routes
-app.use((req, res) => {
+app.use((req, res, next) => {
   res.status(404).json({
     status: 'error',
-    message: `Requested resource not found`,
-    timestamp: new Date().toISOString(),
+    code: 404,
+    message: 'Requested resource not found'
   });
 });
 
