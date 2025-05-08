@@ -41,7 +41,7 @@ git pull origin master || {
 
 # Install Node.js dependencies
 echo "Installing Node dependencies..."
-npm install --production || {
+/home/ariesspo/nodevenv/api/18/bin/npm install --production || {
     log_failure "npm install failed"
     exit 1
 }
@@ -57,7 +57,7 @@ fi
 
 # Restart application with PM2
 echo "Restarting application with PM2..."
-pm2 restart all || {
+/home/ariesspo/nodevenv/api/18/lib/node_modules/.bin/pm2 restart all || {
     log_failure "PM2 restart failed"
     exit 1
 }
