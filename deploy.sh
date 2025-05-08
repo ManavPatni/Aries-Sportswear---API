@@ -24,17 +24,17 @@ git reset --hard || {
     exit 1
 }
 
-# Pull latest changes from main
+# Pull latest changes from master
 echo "Pulling latest code from GitHub..."
 git fetch origin || {
     log_failure "Git fetch failed"
     exit 1
 }
-git checkout main || {
-    log_failure "Git checkout main failed"
+git checkout master || {
+    log_failure "Git checkout master failed"
     exit 1
 }
-git pull origin main || {
+git pull origin master || {
     log_failure "Git pull failed"
     exit 1
 }
