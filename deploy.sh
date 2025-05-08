@@ -1,45 +1,65 @@
 #!/bin/bash
 
-echo "Starting Deployment: $(date)"
+# Deployment script with failure-only logging
+LOG_FILE="/home/ariesspo/api/deploy.log"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
-# Navigate to your project directory
-cd /home/ariesspo/api || {
-  echo "Failed to navigate to project directory."
-  exit 1
+# Function to log failures
+log_failure() {
+    echo "[$TIMESTAMP] ERROR: $1" >> "$LOG_FILE"
+    echo "$1"
 }
 
-# Reset local changes (optional: useful in auto deploys)
+# Navigate to project directory
+echo "Navigating to project directory..."
+cd /home/ariesspo/api || {
+    log_failure "Failed to navigate to project directory"
+    exit 1
+}
+
+# Ensure git is clean
 echo "Resetting local changes..."
-git reset --hard
+git reset --hard || {
+    log_failure "Git reset failed"
+    exit 1
+}
 
 # Pull latest changes from main
 echo "Pulling latest code from GitHub..."
+git fetch origin || {
+    log_failure "Git fetch failed"
+    exit 1
+}
+git checkout main || {
+    log_failure "Git checkout main failed"
+    exit 1
+}
 git pull origin main || {
-  echo "Git pull failed."
-  exit 1
+    log_failure "Git pull failed"
+    exit 1
 }
 
 # Install Node.js dependencies
 echo "Installing Node dependencies..."
 npm install --production || {
-  echo "npm install failed."
-  exit 1
+    log_failure "npm install failed"
+    exit 1
 }
 
-# Install PHP dependencies (if using Laravel or Lumen)
+# Install PHP dependencies if composer.json exists
 if [ -f "composer.json" ]; then
-  echo "Installing PHP dependencies..."
-  composer install --no-dev --optimize-autoloader || {
-    echo "composer install failed."
-    exit 1
-  }
+    echo "Installing PHP dependencies..."
+    composer install --no-dev --optimize-autoloader || {
+        log_failure "composer install failed"
+        exit 1
+    }
 fi
 
-# Restart your app (adjust if you're using named processes)
+# Restart application with PM2
 echo "Restarting application with PM2..."
 pm2 restart all || {
-  echo "PM2 restart failed."
-  exit 1
+    log_failure "PM2 restart failed"
+    exit 1
 }
 
-echo "Deployment Completed Successfully: $(date)"
+echo "Deployment Completed Successfully"
