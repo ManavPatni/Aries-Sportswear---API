@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const tokenUtils = require('../utils/tokenUtils');
 
 const register = async (req, res) => {
-  const { email, password, name, avatar } = req.body;
+  const { email, password, name } = req.body;
   if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
 
   const existingUser = await User.findByEmail(email);

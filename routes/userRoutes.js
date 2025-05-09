@@ -1,6 +1,7 @@
 const express = require('express');
-const authController = require('../controllers/userAuthController');
 const authenticateToken = require('../middleware/authMiddleware');
+const authController = require('../controllers/userAuthController');
+const profileController = require('../controllers/profileController');
 
 const router = express.Router();
 
@@ -10,5 +11,7 @@ router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 
 //Protected Routes
+router.get('/details', authenticateToken, profileController.getUserProfile);
+router.put('/details', authenticateToken, profileController.updateUserProfile);
 
 module.exports = router;

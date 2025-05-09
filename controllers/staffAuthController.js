@@ -6,7 +6,7 @@ const tokenUtils = require('../utils/tokenUtils');
 const allowedRoles = ['super-admin', 'admin'];
 
 const register = async (req, res) => {
-  const { email, password, name, avatar, role } = req.body;
+  const { email, password, name, role } = req.body;
 
   if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
   if (!allowedRoles.includes(role)) return res.status(400).json({ message: 'Invalid role specified' });
