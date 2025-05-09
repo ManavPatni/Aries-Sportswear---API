@@ -7,12 +7,13 @@ const Staff = require('../models/staffModel');
 
 // Avatar uploader logic (used only if file is provided)
 const getAvatarUploader = (type, id) => {
+  const publicHtmlPath = path.join(__dirname, '../public_html/uploads', type, 'avatar');
+
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      const dir = `uploads/${type}/avatar`;
-      fs.mkdir(dir, { recursive: true }, (err) => {
+      fs.mkdir(publicHtmlPath, { recursive: true }, (err) => {
         if (err) return cb(err);
-        cb(null, dir);
+        cb(null, publicHtmlPath);
       });
     },
     filename: (req, file, cb) => {
@@ -20,7 +21,7 @@ const getAvatarUploader = (type, id) => {
       cb(null, `${id}${ext}`);
     }
   });
-  
+
   return multer({
     storage,
     fileFilter: (req, file, cb) => {
