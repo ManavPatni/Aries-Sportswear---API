@@ -3,7 +3,7 @@ const db = require('../config/database');
 const RefreshToken = {
   async create({ id, tokenHash, expiresAt }) {
     const [result] = await db.query(
-      'INSERT INTO user_refresh_tokens (user_id, token_hash, expires_at) VALUES (?, ?, ?)',
+      'INSERT INTO staff_refresh_tokens (staff_id, token_hash, expires_at) VALUES (?, ?, ?)',
       [id, tokenHash, expiresAt]
     );
     return result.insertId;
@@ -11,19 +11,19 @@ const RefreshToken = {
 
   async findByTokenHash(tokenHash) {
     const [rows] = await db.query(
-      'SELECT * FROM user_refresh_tokens WHERE token_hash = ? AND expires_at > NOW()',
+      'SELECT * FROM staff_refresh_tokens WHERE token_hash = ? AND expires_at > NOW()',
       [tokenHash]
     );
     return rows[0];
   },
 
   async deleteByTokenHash(tokenHash) {
-    const [result] = await db.query('DELETE FROM user_refresh_tokens WHERE token_hash = ?', [tokenHash]);
+    const [result] = await db.query('DELETE FROM staff_refresh_tokens WHERE token_hash = ?', [tokenHash]);
     return result.affectedRows;
   },
 
-  async deleteByUserId(userId) {
-    const [result] = await db.query('DELETE FROM user_refresh_tokens WHERE user_id = ?', [userId]);
+  async deleteBystaffId(staffId) {
+    const [result] = await db.query('DELETE FROM staff_refresh_tokens WHERE staff_id = ?', [staffId]);
     return result.affectedRows;
   },
 };

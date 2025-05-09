@@ -9,11 +9,11 @@ const User = {
     return result.insertId;
   },
   async findByEmail(email) {
-    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await db.query('SELECT id, email, name, avatar, address FROM users WHERE email = ?', [email]);
     return rows[0];
   },
   async findById(id) {
-    const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+    const [rows] = await db.query('SELECT id, email, name, avatar, address FROM users WHERE id = ?', [id]);
     return rows[0];
   },
 };
