@@ -71,8 +71,8 @@ CREATE TABLE `staff_refresh_tokens` (
   KEY `staff_id` (`staff_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ",
-    'users_refresh_tokens' => "
-CREATE TABLE `users_refresh_tokens` (
+    'user_refresh_tokens' => "
+CREATE TABLE `user_refresh_tokens` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NOT NULL,
   `token_hash` char(64) NOT NULL,
@@ -92,9 +92,9 @@ $constraints = [
         'sql' => "ALTER TABLE `staff_refresh_tokens` ADD CONSTRAINT `staff_refresh_tokens_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON DELETE CASCADE;"
     ],
     [
-        'table' => 'users_refresh_tokens',
+        'table' => 'user_refresh_tokens',
         'constraint_name' => 'refresh_tokens_ibfk_1',
-        'sql' => "ALTER TABLE `users_refresh_tokens` ADD CONSTRAINT `refresh_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;"
+        'sql' => "ALTER TABLE `user_refresh_tokens` ADD CONSTRAINT `refresh_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;"
     ]
 ];
 

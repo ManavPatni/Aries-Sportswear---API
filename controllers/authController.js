@@ -1,5 +1,5 @@
 const User = require('../models/userModel');
-const RefreshToken = require('../models/refreshTokenModel');
+const RefreshToken = require('../models/userRefreshTokenModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { json } = require('express');

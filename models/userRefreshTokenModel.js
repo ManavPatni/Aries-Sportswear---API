@@ -3,7 +3,7 @@ const db = require('../config/database');
 const RefreshToken = {
   async create({ userId, tokenHash, expiresAt }) {
     const [result] = await db.query(
-      'INSERT INTO refresh_tokens (user_id, token_hash, expires_at) VALUES (?, ?, ?)',
+      'INSERT INTO user_refresh_tokens (user_id, token_hash, expires_at) VALUES (?, ?, ?)',
       [userId, tokenHash, expiresAt]
     );
     return result.insertId;
