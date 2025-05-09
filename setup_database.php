@@ -1,10 +1,18 @@
 <?php
 
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+// Load .env
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 // Retrieve database connection details from environment variables
-$db_host = getenv('DB_HOST');
-$db_username = getenv('DB_USERNAME');
-$db_password = getenv('DB_PASSWORD');
-$db_database = getenv('DB_DATABASE');
+$db_host = $_ENV['DB_HOST'] ?? '';
+$db_username = $_ENV['DB_USER'] ?? '';
+$db_password = $_ENV['DB_PASSWORD'] ?? '';
+$db_database = $_ENV['DB_DATABASE'] ?? '';
 
 // Validate that all required environment variables are set
 if (!$db_host || !$db_username || !$db_password || !$db_database) {
