@@ -6,13 +6,20 @@ const User = require('../models/userModel');
 const Staff = require('../models/staffModel');
 
 const getAvatarUploader = (type, id) => {
-  const publicHtmlPath = path.resolve(__dirname, '../public_html/uploads', type, 'avatar');
+  // Determine the base upload path based on the environment
+  const uploadsBasePath = process.env.NODE_ENV === 'production'
+    ? '/home/ariesspo/public_html/uploads'
+    : path.join(process.cwd(), 'uploads');
+  
+  // Construct the full destination path
+  const destinationPath = path.join(uploadsBasePath, type, 'avatar');
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      fs.mkdir(publicHtmlPath, { recursive: true }, (err) => {
+      // Create the directory if it doesn't exist
+      fs.mkdir(destinationPath, { recursive: true }, (err) => {
         if (err) return cb(err);
-        cb(null, publicHtmlPath);
+        cb(null, destinationPath);
       });
     },
     filename: (req, file, cb) => {
