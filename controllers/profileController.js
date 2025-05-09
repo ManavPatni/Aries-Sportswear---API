@@ -5,9 +5,8 @@ const path = require('path');
 const User = require('../models/userModel');
 const Staff = require('../models/staffModel');
 
-// Avatar uploader logic (used only if file is provided)
 const getAvatarUploader = (type, id) => {
-  const publicHtmlPath = path.join(__dirname, '../public_html/uploads', type, 'avatar');
+  const publicHtmlPath = path.resolve(__dirname, '../public_html/uploads', type, 'avatar');
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -19,7 +18,7 @@ const getAvatarUploader = (type, id) => {
     filename: (req, file, cb) => {
       const ext = path.extname(file.originalname);
       cb(null, `${id}${ext}`);
-    }
+    },
   });
 
   return multer({
@@ -30,7 +29,7 @@ const getAvatarUploader = (type, id) => {
       } else {
         cb(new Error('Only images are allowed'));
       }
-    }
+    },
   }).single('avatar');
 };
 
