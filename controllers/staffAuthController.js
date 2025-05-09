@@ -15,7 +15,7 @@ const register = async (req, res) => {
   if (existingStaff) return res.status(400).json({ message: 'Staff already exists' });
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const staffId = await Staff.create({ email, passwordHash, name, avatar, role });
+  const staffId = await Staff.create({ email, passwordHash, name, role });
 
   const accessToken = tokenUtils.generateAccessToken({ staffId, role });
   const refreshToken = tokenUtils.generateRefreshToken();

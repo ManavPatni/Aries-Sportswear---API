@@ -1,10 +1,10 @@
 const db = require('../config/database');
 
 const Staff = {
-  async create({ email, passwordHash, name, avatar, role }) {
+  async create({ email, passwordHash, name, role }) {
     const [result] = await db.query(
-      'INSERT INTO staff (email, password_hash, name, avatar, role) VALUES (?, ?, ?, ?, ?)',
-      [email, passwordHash, name, avatar, role]
+      'INSERT INTO staff (email, password_hash, name, avatar, role) VALUES (?, ?, ?, ?)',
+      [email, passwordHash, name, role]
     );
     return result.insertId;
   },
