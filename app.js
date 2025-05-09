@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const staffRoutes = require('./routes/staffRoutes');
 const cron = require('node-cron');
 const db = require('./config/database');
 
@@ -10,7 +11,8 @@ const app = express();
 app.use(express.json());
 
 // Mount authentication routes
-app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
+app.use('/staff', staffRoutes);
 
 // Schedule a daily cron job to clean up expired refresh tokens
 cron.schedule('0 0 * * *', async () => {
