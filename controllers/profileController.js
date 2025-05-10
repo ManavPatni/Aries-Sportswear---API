@@ -84,6 +84,7 @@ const getUserProfile = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   const userId = req.user.userId;
+  const imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://ariessportswear.com';
 
   upload(req, res, async (err) => {
     if (err) {
@@ -137,7 +138,22 @@ const updateUserProfile = async (req, res) => {
         await deleteFromBunny(existingAvatar);
       }
 
-      res.json({ message: 'User profile updated successfully' });
+      // Fetch updated user data
+      const updatedUser = await User.findById(userId);
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Construct the full avatar URL
+      const avatarUrl = updatedUser.avatar ? `${imageBaseUrl}${updatedUser.avatar}` : null;
+
+      res.json({
+        message: 'User profile updated successfully',
+        user: {
+          ...updatedUser,
+          avatarUrl,
+        },
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Failed to update user profile', error: error.message });
@@ -171,7 +187,8 @@ const getStaffProfile = async (req, res) => {
 };
 
 const updateStaffProfile = async (req, res) => {
-  const staffId = req.staffId; // Adjust if authentication uses req.user.userId
+  const staffId = req.req.user.userId;
+  const imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://ariessportswear.com';
 
   upload(req, res, async (err) => {
     if (err) {
@@ -221,7 +238,22 @@ const updateStaffProfile = async (req, res) => {
         await deleteFromBunny(existingAvatar);
       }
 
-      res.json({ message: 'Staff profile updated successfully' });
+      // Fetch updated staff data
+      const updatedStaff = await Staff.findById(staffId);
+      if (!updatedStaff) {
+        return res.status(404).json({ message: 'Staff not found' });
+      }
+
+      // Construct the full avatar URL
+      const avatarUrl = updatedStaff.avatar ? `${imageBaseUrl}${updatedStaff.avatar}` : null;
+
+      res.json({
+        message: 'Staff profile updated successfully',
+        staff: {
+          ...updatedStaff,
+          avatarUrl,
+        },
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Failed to update staff profile', error: error.message });
