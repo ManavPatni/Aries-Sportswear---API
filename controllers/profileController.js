@@ -33,7 +33,7 @@ const uploadToBunny = async (buffer, filePath) => {
       },
     });
   } catch (error) {
-    throw new Error('Failed to upload to Bunny.net: ' + error.message);
+    throw new Error('Failed to upload to server: ' + error.message);
   }
 };
 
@@ -52,7 +52,7 @@ const deleteFromBunny = async (filePath) => {
       },
     });
   } catch (error) {
-    console.error('Failed to delete file from Bunny.net:', error);
+    console.error('Failed to delete file from server:', error);
     // Deletion failure is logged but does not interrupt the process
   }
 };
