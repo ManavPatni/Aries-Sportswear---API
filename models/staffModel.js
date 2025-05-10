@@ -8,12 +8,12 @@ const Staff = {
     );
     return result.insertId;
   },
-  async findByEmail(email) {
-    const [rows] = await db.query('SELECT id, email, name, avatar, role FROM staff WHERE email = ?', [email]);
-    return rows[0];
-  },
   async findById(id) {
     const [rows] = await db.query('SELECT id, email, name, avatar, role FROM staff WHERE id = ?', [id]);
+    return rows[0];
+  },
+  async findByEmail(email) {
+    const [rows] = await db.query('SELECT id, email, password_hash FROM staff WHERE email = ?', [email]);
     return rows[0];
   },
 };
