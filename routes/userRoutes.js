@@ -6,7 +6,8 @@ const profileController = require('../controllers/profileController');
 const router = express.Router();
 
 //Public routes
-router.post('/register', authController.register);
+router.post('/request-verification', authController.requestVerification);
+router.post('/verify-otp', authController.verifyOtpAndRegister);
 router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 

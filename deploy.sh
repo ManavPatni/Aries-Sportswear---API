@@ -52,7 +52,7 @@ if [ -f "composer.json" ]; then
 fi
 
 echo "Setting up database..."
-php /home/ariesspo/api/setup_database.php 2>> "$LOG_FILE" || {
+php /home/ariesspo/api/db/setup_database.php 2>> "$LOG_FILE" || {
     log_failure "Database setup failed"
     exit 1
 }

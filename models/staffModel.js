@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const db = require('../db/database');
 
 const Staff = {
   async create({ email, passwordHash, name, role }) {
