@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const db = require('../db/database');
 const multer = require('multer');
 const path = require('path');
 const axios = require('axios');

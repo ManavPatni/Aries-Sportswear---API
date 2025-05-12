@@ -3,7 +3,7 @@ const express = require('express');
 const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const cron = require('node-cron');
-const db = require('./config/database');
+const db = require('./db/database');
 
 const app = express();
 
@@ -14,15 +14,30 @@ app.use(express.json());
 app.use('/user', userRoutes);
 app.use('/staff', staffRoutes);
 
-// Schedule a daily cron job to clean up expired refresh tokens
+// Schedule a daily cron job to clean up database
 cron.schedule('0 0 * * *', async () => {
+  const client = await db.connect();
   try {
-    await db.query('DELETE FROM refresh_tokens WHERE expires_at < NOW()');
-    console.log('Expired tokens cleaned up');
+    await client.query('BEGIN');
+
+    const query = `
+      DELETE FROM user_refresh_tokens WHERE expires_at < NOW();
+      DELETE FROM staff_refresh_tokens WHERE expires_at < NOW();
+      DELETE FROM verification_requests WHERE expires_at < NOW() OR verified = 1;
+    `;
+
+    await client.query(query);
+
+    await client.query('COMMIT');
+    console.log('Database cleaned up');
   } catch (error) {
-    console.error('Error cleaning up expired tokens:', error);
+    await client.query('ROLLBACK');
+    console.error('Error cleaning up Database:', error);
+  } finally {
+    client.release();
   }
 });
+
 
 // Define the port from environment variables or default to 3000
 const PORT = process.env.PORT || 3000;
