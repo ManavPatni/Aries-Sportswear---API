@@ -49,7 +49,7 @@ const requestVerification = async (req, res) => {
 };
 
 const verifyOtpAndRegister = async (req, res) => {
-  const { email, otp, password, name } = req.body;
+  const { email, otp, password } = req.body;
 
   if (!email || !otp || !password) {
     return res.status(400).json({ message: 'Email, OTP, and password are required.' });
@@ -67,14 +67,18 @@ const verifyOtpAndRegister = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const passwordHash = await bcrypt.hash(password, salt);
 
-  const userId = await User.create({ email, passwordHash, name });
+  const userId = await User.create({ email, passwordHash });
 
   await Verification.markVerified(request.id);
 
   const accessToken = tokenUtils.generateAccessToken({ userId });
   const refreshToken = tokenUtils.generateRefreshToken();
 
-  await tokenUtils.saveRefreshToken({ model: RefreshToken, id: userId, token: refreshToken });
+  await tokenUtils.saveRefreshToken({ 
+    model: RefreshToken, 
+    id: userId, 
+    token: refreshToken 
+  });
 
   res.status(201).json({
     message: 'User registered successfully.',

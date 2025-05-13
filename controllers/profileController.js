@@ -161,6 +161,32 @@ const updateUserProfile = async (req, res) => {
   });
 };
 
+const deleteUser = async (req, res) => {
+  const userId = req.user.userId;
+
+  try {
+    const [result] = await db.query("DELETE FROM users WHERE id = ?", [userId]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully"
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
 // ---------- Staff Profile ----------
 const getStaffProfile = async (req, res) => {
   const staffId = req.user.userId;
@@ -264,6 +290,7 @@ const updateStaffProfile = async (req, res) => {
 module.exports = {
   getUserProfile,
   updateUserProfile,
+  deleteUser,
   getStaffProfile,
   updateStaffProfile,
 };
