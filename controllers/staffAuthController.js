@@ -5,7 +5,7 @@ const tokenUtils = require('../utils/tokenUtils');
 const Verification = require('../models/verificationRequestModel')
 const tempEmailChecker = require('../utils/tempEmailChecker');
 const User = require('../models/userModel');
-const rateLimiter = register('../utils/rateLimiter');
+const rateLimiter = require('../utils/rateLimiter');
 
 const allowedRoles = ['super-admin', 'admin', 'staff'];
 
