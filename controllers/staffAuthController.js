@@ -51,10 +51,10 @@ const requestVerification = async (req, res) => {
 };
 
 const verifyOtpAndRegister = async (req, res) => {
-  const {email, otp, password, role} = req.body;
+  const {email, otp, password, name, role} = req.body;
 
-  if(!email || !otp || !password || !role) {
-    return res.status(400).json({ message: 'Email, otp, password and role are required'});
+  if(!email || !otp || !password || !name || !role) {
+    return res.status(400).json({ message: 'Email, otp, password, name and role are required'});
   }
 
   if(!allowedRoles.includes(role)) {
@@ -73,7 +73,7 @@ const verifyOtpAndRegister = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const passwordHash = await bcrypt.hash(password, salt);
 
-  const staffId = await Staff.create({ email, passwordHash, role})
+  const staffId = await Staff.create({ email, passwordHash, name, role})
 
   await Verification.markVerified(request.id);
 
