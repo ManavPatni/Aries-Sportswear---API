@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const tokenUtils = require('../utils/tokenUtils');
 const Verification = require('../models/verificationRequestModel')
 const tempEmailChecker = require('../utils/tempEmailChecker');
-const User = require('../models/userModel');
+const emailService = require('../utils/emailService');
 const rateLimiter = require('../utils/rateLimiter');
 
 const allowedRoles = ['super-admin', 'admin', 'staff'];
@@ -55,6 +55,10 @@ const verifyOtpAndRegister = async (req, res) => {
 
   if(!email || !otp || !password || !role) {
     return res.status(400).json({ message: 'Email, otp, password and role are required'});
+  }
+
+  if(!allowedRoles.includes(role)) {
+    return res.status(400).json({ message: 'Invaild role'});
   }
 
   const request = await Verification.findLatestUnverified(email);
