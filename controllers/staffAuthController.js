@@ -2,14 +2,14 @@ const Staff = require('../models/staffModel');
 const RefreshToken = require('../models/staffRefreshTokenModel');
 const bcrypt = require('bcryptjs');
 const tokenUtils = require('../utils/tokenUtils');
-const Verification = require('../models/verificationRequestModel')
+const otpRequest = require('../models/otpRequestModel')
 const tempEmailChecker = require('../utils/tempEmailChecker');
 const emailService = require('../utils/emailService');
 const rateLimiter = require('../utils/rateLimiter');
 
 const allowedRoles = ['super-admin', 'admin', 'staff'];
 
-const requestVerification = async (req, res) => {
+const sendOtp = async (req, res) => {
   const { email } = req.body;
   const ip = req.ip;
   const userAgent = req.get('User-Agent');
@@ -36,7 +36,7 @@ const requestVerification = async (req, res) => {
   const otpHash = await bcrypt.hash(otp, 10);
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
-  await Verification.create({
+  await otpRequest.create({
     email: String(email).trim(),
     otpHash: otpHash,
     role: 'staff',
@@ -50,48 +50,41 @@ const requestVerification = async (req, res) => {
   res.status(200).json({ message: 'OTP sent to your email.' });
 };
 
-const verifyOtpAndRegister = async (req, res) => {
-  const {email, otp, password, name, role} = req.body;
+const register = async (req, res) => {
+  const { email, password, name, role } = req.body;
 
-  if(!email || !otp || !password || !name || !role) {
-    return res.status(400).json({ message: 'Email, otp, password, name and role are required'});
+  if (!email || !password || !name || !role) {
+    return res.status(400).json({ message: 'Email, password, name, and role are required' });
   }
 
-  if(!allowedRoles.includes(role)) {
-    return res.status(400).json({ message: 'Invaild role'});
+  if (!allowedRoles.includes(role)) {
+    return res.status(400).json({ message: 'Invalid role' });
   }
 
-  const request = await Verification.findLatestUnverified(email);
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
 
-  if (!request || request.expires_at < new Date()) {
-    return res.status(400).json({ message: 'OTP expired or invaild.' });
+    const staffId = await Staff.create({ email, passwordHash, name, role });
+
+    const accessToken = tokenUtils.generateAccessToken({ staffId });
+    const refreshToken = tokenUtils.generateRefreshToken();
+
+    await tokenUtils.saveRefreshToken({
+      model: RefreshToken,
+      id: staffId,
+      token: refreshToken
+    });
+
+    res.status(201).json({
+      message: 'Staff registered successfully',
+      accessToken,
+      refreshToken
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Server error during registration' });
   }
-  
-  const isValid = await bcrypt.compare(otp, request.otp_hash);
-  if (!isValid) return res.status(400).json({ message: 'Invalid OTP.' });
-
-  const salt = await bcrypt.genSalt(10);
-  const passwordHash = await bcrypt.hash(password, salt);
-
-  const staffId = await Staff.create({ email, passwordHash, name, role})
-
-  await Verification.markVerified(request.id);
-
-  const accessToken = tokenUtils.generateAccessToken({ staffId });
-  const refreshToken = tokenUtils.generateRefreshToken();
-
-  await tokenUtils.saveRefreshToken({
-    model: RefreshToken,
-    id: staffId,
-    token: refreshToken
-  });
-
-  res.status(201).json({
-    message: 'Staff registered successfully.',
-    accessToken,
-    refreshToken
-  });
-
 };
 
 const login = async (req, res) => {
@@ -130,8 +123,8 @@ const refreshToken = async (req, res) => {
 };
 
 module.exports = { 
-  requestVerification,
-  verifyOtpAndRegister,
+  sendOtp,
+  register,
   login, 
   refreshToken 
 };
