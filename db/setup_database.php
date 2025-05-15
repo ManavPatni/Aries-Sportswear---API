@@ -100,8 +100,8 @@ CREATE TABLE `user_refresh_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 SQL,
 
-    'verification_requests' => <<<SQL
-CREATE TABLE `verification_requests` (
+    'otp_request' => <<<SQL
+CREATE TABLE `otp_request` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `email` VARCHAR(320) NOT NULL,
   `otp_hash` CHAR(60) NOT NULL,

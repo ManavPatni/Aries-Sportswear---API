@@ -59,31 +59,21 @@ const deleteFromBunny = async (filePath) => {
 
 // ---------- User Profile ----------
 const getUserProfile = async (req, res) => {
-  const userId = req.user.userId;
   const imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://ariessportswear.com';
 
-  try {
-    const userData = await User.findById(userId);
-    if (!userData) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+  // Construct the full avatar URL using the CDN base URL
+  const avatar = req.user.avatar;
+  const avatarUrl = avatar ? `${imageBaseUrl}${avatar}` : null;
 
-    // Construct the full avatar URL using the CDN base URL
-    const avatar = userData.avatar;
-    const avatarUrl = avatar ? `${imageBaseUrl}${avatar}` : null;
-
-    return res.status(200).json({
-      ...userData,
-      avatarUrl,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Server error' });
-  }
+  return res.status(200).json({
+    ...req.user,
+    avatarUrl,
+  });
+  
 };
 
 const updateUserProfile = async (req, res) => {
-  const userId = req.user.userId;
+  const userId = req.user.id;
   const imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://ariessportswear.com';
 
   upload(req, res, async (err) => {
@@ -162,7 +152,7 @@ const updateUserProfile = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const userId = req.user.userId;
+  const userId = req.user.id;
 
   try {
     const [result] = await db.query("DELETE FROM users WHERE id = ?", [userId]);
@@ -189,31 +179,21 @@ const deleteUser = async (req, res) => {
 
 // ---------- Staff Profile ----------
 const getStaffProfile = async (req, res) => {
-  const staffId = req.user.userId;
   const imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://ariessportswear.com';
+  
+  // Construct the full avatar URL using the CDN base URL
+  const avatar = req.staff.avatar;
+  const avatarUrl = avatar ? `${imageBaseUrl}${avatar}` : null;
 
-  try {
-    const userData = await Staff.findById(staffId);
-    if (!userData) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+  return res.status(200).json({
+    ...req.staff,
+    avatarUrl,
+  });
 
-    // Construct the full avatar URL using the CDN base URL
-    const avatar = userData.avatar;
-    const avatarUrl = avatar ? `${imageBaseUrl}${avatar}` : null;
-
-    return res.status(200).json({
-      ...userData,
-      avatarUrl,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Server error' });
-  }
 };
 
 const updateStaffProfile = async (req, res) => {
-  const staffId = req.req.user.userId;
+  const staffId = req.staff.id;
   const imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://ariessportswear.com';
 
   upload(req, res, async (err) => {
