@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const db = require('./db/database');
+const db = require('../db/database');
 
 // 1. Daily Cleanup at midnight
 cron.schedule('0 0 * * *', async () => {
