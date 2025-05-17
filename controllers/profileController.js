@@ -152,27 +152,43 @@ const updateUserProfile = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const userId = req.user.id;
+  const { id, avatar, email } = req.user;
 
   try {
-    const [result] = await db.query("DELETE FROM users WHERE id = ?", [userId]);
+    // Delete avatar from Bunny if present
+    if (avatar) {
+      try {
+        await deleteFromBunny(avatar);
+      } catch (err) {
+        console.warn("Failed to delete avatar from Bunny:", err);
+      }
+    }
+
+    // Delete OTP requests
+    await db.query(
+      "DELETE FROM otp_request WHERE email = ? AND role = 'user'",
+      [email]
+    );
+
+    // Delete the user
+    const [result] = await db.query("DELETE FROM users WHERE id = ?", [id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "User deleted successfully"
+      message: "User deleted successfully",
     });
   } catch (error) {
     console.error("Error deleting user:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -267,10 +283,53 @@ const updateStaffProfile = async (req, res) => {
   });
 };
 
+const deleteStaff = async (req, res) => {
+  const { id, avatar, email } = req.staff;
+
+  try {
+    // Delete avatar from Bunny if present
+    if (avatar) {
+      try {
+        await deleteFromBunny(avatar);
+      } catch (err) {
+        console.warn("Failed to delete avatar from Bunny:", err);
+      }
+    }
+
+    // Delete OTP requests
+    await db.query(
+      "DELETE FROM otp_request WHERE email = ? AND role = 'staff'",
+      [email]
+    );
+
+    // Delete the user
+    const [result] = await db.query("DELETE FROM staff WHERE id = ?", [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Staff not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Staff deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   getUserProfile,
   updateUserProfile,
   deleteUser,
   getStaffProfile,
   updateStaffProfile,
+  deleteStaff
 };

@@ -15,5 +15,6 @@ router.post('/refresh-token', authController.refreshToken);
 //Protected Routes
 router.get('/details', authenticateToken, profileController.getStaffProfile);
 router.put('/details', authenticateToken, profileController.updateStaffProfile);
+router.delete('/', authenticateToken, profileController.deleteStaff);
 
 module.exports = router;
