@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
-const cron = require('node-cron');
+const cron = require('./cron/cronJobs');
 const db = require('./db/database');
 
 const app = express();
@@ -56,30 +56,6 @@ app.use((req, res, next) => {
     code: 404,
     message: 'Requested resource not found'
   });
-});
-
-// Schedule a daily cron job to clean up database
-cron.schedule('0 0 * * *', async () => {
-  const client = await db.connect();
-  try {
-    await client.query('BEGIN');
-
-    const query = `
-      DELETE FROM user_refresh_tokens WHERE expires_at < NOW();
-      DELETE FROM staff_refresh_tokens WHERE expires_at < NOW();
-      DELETE FROM verification_requests WHERE expires_at < NOW() OR verified = 1;
-    `;
-
-    await client.query(query);
-
-    await client.query('COMMIT');
-    console.log('Database cleaned up');
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error cleaning up Database:', error);
-  } finally {
-    client.release();
-  }
 });
 
 // Start the server

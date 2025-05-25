@@ -1,19 +1,24 @@
 const express = require('express');
 const authenticateToken = require('../middleware/authMiddleware');
-const verifyOtp = require('../middleware/otpMiddleware');
-const authController = require('../controllers/staffAuthController');
-const profileController = require('../controllers/profileController');
+const authController = require('../controllers/staff/authController');
+const profileController = require('../controllers/staff/profileController');
+const staffController = require('../controllers/staff/staffController');
 
 const router = express.Router();
 
 //Public routes
-router.post('/send-otp', authController.sendOtp);
-router.post('/register', verifyOtp, authController.register);
 router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 
 //Protected Routes
-router.get('/details', authenticateToken, profileController.getStaffProfile);
-router.put('/details', authenticateToken, profileController.updateStaffProfile);
+//Logged-in staff details
+router.get('/details', authenticateToken, profileController.getDeatils);
+router.put('/details', authenticateToken, profileController.updateDetails);
+
+//Manage staff
+router.post('/', authenticateToken, staffController.addStaffMember);
+router.get('/', authenticateToken, staffController.getAllStaffMembers);
+router.get('/:id', authenticateToken, staffController.getStaffById);
+router.delete('/:id', authenticateToken, staffController.deleteStaffMember);
 
 module.exports = router;

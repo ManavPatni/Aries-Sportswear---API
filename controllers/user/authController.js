@@ -1,11 +1,11 @@
-const User = require('../models/userModel');
-const RefreshToken = require('../models/userRefreshTokenModel');
+const User = require('../../models/userModel');
+const RefreshToken = require('../../models/userRefreshTokenModel');
 const bcrypt = require('bcryptjs');
-const tokenUtils = require('../utils/tokenUtils');
-const otpRequest = require('../models/otpRequestModel');
-const tempEmailChecker = require('../utils/tempEmailChecker');
-const emailService = require('../utils/emailService');
-const rateLimiter = require('../utils/rateLimiter');
+const tokenUtils = require('../../utils/tokenUtils');
+const otpRequest = require('../../models/otpRequestModel');
+const tempEmailChecker = require('../../utils/tempEmailChecker');
+const emailService = require('../../utils/emailService');
+const rateLimiter = require('../../utils/rateLimiter');
 
 const sendOtp = async (req, res) => {
   const { email } = req.body;
@@ -84,7 +84,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findByEmail(email);
-  if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+  if (!user) return res.status(401).json({ message: 'No user found' });
 
   const isValid = await bcrypt.compare(password, user.password_hash);
   if (!isValid) return res.status(401).json({ message: 'Invalid credentials' });

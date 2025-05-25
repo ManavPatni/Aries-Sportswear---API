@@ -1,8 +1,8 @@
 const express = require('express');
 const authenticateToken = require('../middleware/authMiddleware');
 const verifyOtp = require('../middleware/otpMiddleware');
-const authController = require('../controllers/userAuthController');
-const profileController = require('../controllers/profileController');
+const authController = require('../controllers/user/authController');
+const profileController = require('../controllers/user/profileController');
 
 const router = express.Router();
 
@@ -13,8 +13,8 @@ router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 
 //Protected Routes
-router.get('/details', authenticateToken, profileController.getUserProfile);
-router.put('/details', authenticateToken, profileController.updateUserProfile);
-router.delete('/user', authenticateToken, profileController.deleteUser);
+router.get('/details', authenticateToken, profileController.getDetails);
+router.put('/details', authenticateToken, profileController.updateDeatils);
+router.delete('/', authenticateToken, profileController.deleteUser);
 
 module.exports = router;
