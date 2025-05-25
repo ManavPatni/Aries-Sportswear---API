@@ -288,9 +288,6 @@ function constraintExists(PDO $pdo, string $db, string $table, string $name, str
 foreach ($tables as $table => $sql) {
     if (!tableExists($pdo, $db_database, $table)) {
         $pdo->exec($sql);
-        echo "Created table: $table\n";
-    } else {
-        echo "Table exists: $table\n";
     }
 }
 
@@ -298,10 +295,5 @@ foreach ($tables as $table => $sql) {
 foreach ($constraints as $c) {
     if (!constraintExists($pdo, $db_database, $c['table'], $c['name'], $c['type'])) {
         $pdo->exec($c['sql']);
-        echo "Applied {$c['type']}: {$c['name']} on {$c['table']}\n";
-    } else {
-        echo "{$c['type']} exists: {$c['name']} on {$c['table']}\n";
     }
 }
-
-echo "\nDatabase setup completed successfully.\n";
