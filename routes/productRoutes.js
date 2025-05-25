@@ -20,11 +20,11 @@ router.get('/product/:id', productController.getProductById);
 // Protected Routes
 // Category
 router.post('/category', authenticateToken, categoryController.addCategory);
-router.put('/category/', authenticateToken, categoryController.updateCategory);
+router.put('/category', authenticateToken, categoryController.updateCategory);
 router.delete('/category/:id', authenticateToken, categoryController.deleteCategory);
 // Sub Category
 router.post('/sub-category', authenticateToken, categoryController.addSubCategory);
-router.put('/sub-category/', authenticateToken, categoryController.updateSubCategory);
+router.put('/sub-category', authenticateToken, categoryController.updateSubCategory);
 router.delete('/sub-category/:id', authenticateToken, categoryController.deleteSubCategory);
 // Products
 router.post('/product', authenticateToken, upload.any(), productController.addProduct);
