@@ -183,7 +183,7 @@ const getAllVariants = async (req, res) => {
             `
             SELECT v.*, 
                    p.name AS productName, 
-                   p.sub_category_id AS productSubCategoryId 
+                   p.sub_category_id AS product_sub_category_id 
             FROM variant v
             JOIN product p ON v.product_id = p.id
             LIMIT ? OFFSET ?
@@ -215,7 +215,7 @@ const getFilteredVariants = async (req, res) => {
         let query = `
             SELECT v.*, 
                    p.name AS productName, 
-                   p.sub_category_id AS productSubCategoryId, 
+                   p.sub_category_id AS product_sub_category_id, 
                    sc.category_id, 
                    c.name AS categoryName, 
                    sc.name AS subCategoryName
