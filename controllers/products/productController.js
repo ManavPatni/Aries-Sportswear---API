@@ -9,7 +9,7 @@ const addProduct = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
     try {
-        const { productId, categoryId, name } = req.body;
+        const { productId, subCategoryId, name } = req.body;
         let finalProductId = productId;
         const variants = JSON.parse(req.body.variants);
 
@@ -31,7 +31,7 @@ const addProduct = async (req, res) => {
         // Create product
         if (!finalProductId) {
             const [result] = await productModel.create({ 
-                subCategoryId: categoryId,
+                subCategoryId: subCategoryId,
                 name: name 
             });
 
