@@ -34,7 +34,13 @@ const authenticateToken = async (req, res, next) => {
 
         return res.status(403).json({ message: 'Invalid token: No valid user or staff ID' });
     } catch (err) {
-        console.error('OTP Verification Error:', err);
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Access token expired' });
+        } else if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid access token' });
+        }
+
+        console.error('Unexpected Token Error:', err);
         return res.status(500).json({ message: 'Internal server error' });
     }
 };

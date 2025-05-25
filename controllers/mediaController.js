@@ -1,4 +1,3 @@
-const path = require('path');
 const axios = require('axios');
 
 // Function to upload file buffer to server

@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
+const productRoutes = require('./routes/productRoutes');
 const cron = require('./cron/cronJobs');
 const db = require('./db/database');
 
@@ -38,6 +39,7 @@ app.use(cors({
 }));
 
 // Routes
+app.use('/', productRoutes);
 app.use('/user', userRoutes);
 app.use('/staff', staffRoutes);
 

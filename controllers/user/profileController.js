@@ -156,3 +156,9 @@ module.exports = {
   updateDeatils,
   deleteUser
 };
+
+/*
+TODO 
+-   Reset password
+-   Forgot password
+*/
