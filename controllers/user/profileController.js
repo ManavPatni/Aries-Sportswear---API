@@ -44,7 +44,7 @@ const updateDeatils = async (req, res) => {
 
     try {
       // Fetch existing avatar
-      const [rows] = await db.query('SELECT avatar FROM users WHERE id = ?', [userId]);
+      const [rows] = await db.query('SELECT avatar FROM user WHERE id = ?', [userId]);
       const existingAvatar = rows.length > 0 ? rows[0].avatar : null;
 
       const { name, address } = req.body;
@@ -73,7 +73,7 @@ const updateDeatils = async (req, res) => {
         return res.status(400).json({ message: 'No data provided to update' });
       }
 
-      const query = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
+      const query = `UPDATE user SET ${updates.join(', ')} WHERE id = ?`;
       values.push(userId);
 
       const [result] = await db.query(query, values);
@@ -129,7 +129,7 @@ const deleteUser = async (req, res) => {
     );
 
     // Delete the user
-    const [result] = await db.query("DELETE FROM users WHERE id = ?", [id]);
+    const [result] = await db.query("DELETE FROM user WHERE id = ?", [id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({

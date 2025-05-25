@@ -51,18 +51,18 @@ git pull origin master || {
 #     }
 # fi
 
-# echo "Setting up database..."
-# php /home/ariesspo/api/db/setup_database.php 2>> "$LOG_FILE" || {
-#     log_failure "Database setup failed"
-#     exit 1
-# }
+echo "Setting up database..."
+php /home/ariesspo/api/db/setup_database.php 2>> "$LOG_FILE" || {
+    log_failure "Database setup failed"
+    exit 1
+}
 
-# # Kill old process
-# if [ -f "$PID_FILE" ]; then
-#     OLD_PID=$(cat "$PID_FILE")
-#     echo "Killing old Node.js process ($OLD_PID)..."
-#     kill "$OLD_PID" 2>/dev/null || echo "No running process found"
-# fi
+# Kill old process
+if [ -f "$PID_FILE" ]; then
+    OLD_PID=$(cat "$PID_FILE")
+    echo "Killing old Node.js process ($OLD_PID)..."
+    kill "$OLD_PID" 2>/dev/null || echo "No running process found"
+fi
 
 # # Start new Node.js process
 # echo "Starting new Node.js app..."
