@@ -6,3 +6,10 @@ exports.create = async (data) => {
         [data.productId, data.tagId]
     );
 };
+
+exports.findByTagId = async (tagId) => {
+    return db.query(
+        'SELECT * FORM product_tag WHERE tag_id = ?',
+        [tagId]
+    );
+};
