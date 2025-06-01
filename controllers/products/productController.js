@@ -319,7 +319,7 @@ const getFilteredVariants = async (req, res) => {
         const [tagRows] = await db.query(`
             SELECT pt.product_id, t.name 
             FROM product_tag pt
-            JOIN tag t ON pt.tagId = t.id
+            JOIN tag t ON pt.tag_id = t.id
             WHERE pt.product_id IN (${placeholders})
         `, productIds);
 
@@ -366,8 +366,8 @@ const getProductById = async (req, res) => {
         const [tags] = await db.query(`
             SELECT tag.name 
             FROM tag 
-            INNER JOIN product_tag ON product_tag.tagId = tag.id 
-            WHERE product_tag.productId = ?
+            INNER JOIN product_tag ON product_tag.tag_id = tag.id 
+            WHERE product_tag.product_id = ?
         `, [id]);
 
         product.tags = tags.map(tag => tag.name); // just the names as array
@@ -409,7 +409,7 @@ const addTagToProduct = async (req, res) => {
 
         // Get current tag IDs for the product
         const [currentTags] = await db.query(
-            'SELECT tagId FROM product_tag WHERE productId = ?',
+            'SELECT tagId FROM product_tag WHERE product_id = ?',
             [productId]
         );
         const currentTagIds = currentTags.map(row => row.tagId.toString());
@@ -420,12 +420,12 @@ const addTagToProduct = async (req, res) => {
 
         // Add missing tags
         for (const id of tagsToAdd) {
-            await db.query('INSERT INTO product_tag (productId, tagId) VALUES (?, ?)', [productId, id]);
+            await db.query('INSERT INTO product_tag (product_id, tag_id) VALUES (?, ?)', [productId, id]);
         }
 
         // Remove extra tags
         for (const id of tagsToRemove) {
-            await db.query('DELETE FROM product_tag WHERE productId = ? AND tagId = ?', [productId, id]);
+            await db.query('DELETE FROM product_tag WHERE product_id = ? AND tag_id = ?', [productId, id]);
         }
 
         return res.status(200).json({
