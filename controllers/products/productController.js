@@ -207,10 +207,10 @@ const getAllVariants = async (req, res) => {
         // Get all tags for those productIds
         const placeholders = productIds.map(() => '?').join(',');
         const [tagRows] = await db.query(`
-            SELECT pt.productId, t.name 
+            SELECT pt.product_id, t.name 
             FROM product_tag pt
-            JOIN tag t ON pt.tagId = t.id
-            WHERE pt.productId IN (${placeholders})
+            JOIN tag t ON pt.tag_id = t.id
+            WHERE pt.product_id IN (${placeholders})
         `, productIds);
 
         // Map productId -> tags[]
