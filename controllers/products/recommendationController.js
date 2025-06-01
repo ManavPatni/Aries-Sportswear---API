@@ -1,7 +1,6 @@
 const db = require('../../db/database');
 
 const getRecommendedProductsByTags = async (req, res) => {
-    if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
     const tagIds = [1, 2];
 
@@ -18,7 +17,7 @@ const getRecommendedProductsByTags = async (req, res) => {
             WHERE pt.tag_id IN (${placeholders})
             LIMIT ? OFFSET ?
             `,
-            [...tagIds]
+            [...tagIds, limit, offset]
         );
 
         for (let product of products) {
