@@ -18,7 +18,7 @@ router.get('/categories', categoryController.getCategories);
 router.get('/products', productController.getAllVariants);
 router.get('/products/filter', productController.getFilteredVariants);
 router.get('/product/:id', productController.getProductById);
-router.get('/products/featured', recommendationController.getRecommendedVariants);
+router.get('/products/featured', recommendationController.getVariantsByTags);
 
 // Protected Routes
 // Category
