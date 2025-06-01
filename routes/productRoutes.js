@@ -2,6 +2,8 @@ const express = require('express');
 const authenticateToken = require('../middleware/authMiddleware');
 const categoryController = require('../controllers/products/categoryController');
 const productController = require('../controllers/products/productController');
+const recommendationController = require('../controllers/products/recommendationController');
+const tagController = require('../controllers/products/tagController');
 const multer = require('multer');
 
 const router = express.Router();
@@ -16,6 +18,7 @@ router.get('/categories', categoryController.getCategories);
 router.get('/products', productController.getAllVariants);
 router.get('/products/filter', productController.getFilteredVariants);
 router.get('/product/:id', productController.getProductById);
+router.get('/products/featured', recommendationController.getRecommendedProductsByTags);
 
 // Protected Routes
 // Category
@@ -32,5 +35,9 @@ router.put('/product/:id', authenticateToken, productController.updateProduct);
 router.put('/product/variant/:id', authenticateToken, productController.updateVariant);
 router.delete('/product/:id', authenticateToken, productController.deleteProduct);
 router.delete('/product/variant/:id', authenticateToken, productController.deleteVariant);
+router.post('/product/tag', authenticateToken, productController.addTagToProduct);
+//Tags
+router.post('/tags', authenticateToken, tagController.addTag);
+
 
 module.exports = router;

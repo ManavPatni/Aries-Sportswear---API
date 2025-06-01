@@ -4,6 +4,8 @@ const productModel = require('../../models/productModel');
 const variantModel = require('../../models/variantModel');
 const variantImageModel = require('../../models/variantImageModel');
 const productTagModel = require('../../models/productTagModel');
+const tagModel = require('../../models/tagModel');
+const productTagModel = require('../../models/productTagModel')
 
 const addProduct = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
@@ -92,7 +94,8 @@ const addProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
-    const { productId, name, subCategoryId } = req.body;
+    const productId = req.params;
+    const { name, subCategoryId } = req.body;
     if (!productId || !name || !subCategoryId) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
@@ -109,8 +112,10 @@ const updateProduct = async (req, res) => {
 const updateVariant = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
+    const variantId = req.params;
+
     const {
-        variantId, description, color, size,
+        description, color, size,
         price, stock, external_link, isBase
     } = req.body;
 
@@ -308,6 +313,36 @@ const getProductById = async (req, res) => {
     }
 };
 
+const addTagToProduct = async (req, res) => {
+    if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
+    
+    const { productId, tagId } = req.body;
+
+    if (!productId || !tagId) {
+        return res.status(400).json({ message: 'productId and tagId are required.' });
+    }
+
+    try {
+        const [product, tag] = await Promise.all([
+            productModel.findById(productId),
+            tagModel.findById(tagId),
+        ]);
+
+        if (!product) return res.status(404).json({ message: 'Product not found.' });
+        if (!tag) return res.status(404).json({ message: 'Tag not found.' });
+
+        await productTagModel.create({ productId, tagId });
+
+        return res.status(200).json({ message: 'Tag applied successfully.' });
+    } catch (err) {
+        console.error('Error adding tag to product:', err);
+        return res.status(500).json({
+            message: 'Failed to apply tag to product',
+            error: err.message,
+        });
+    }
+};
+
 module.exports = {
     addProduct,
     updateProduct,
@@ -316,7 +351,8 @@ module.exports = {
     deleteVariant,
     getAllVariants,
     getFilteredVariants,
-    getProductById
+    getProductById,
+    addTagToProduct
 };
 
 /*
