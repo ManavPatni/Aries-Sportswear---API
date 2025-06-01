@@ -38,6 +38,7 @@ router.delete('/product/variant/:id', authenticateToken, productController.delet
 router.post('/product/tag', authenticateToken, productController.addTagToProduct);
 //Tags
 router.post('/tags', authenticateToken, tagController.addTag);
+router.get('/tags', authenticateToken, tagController.getAllTags);
 
 
 module.exports = router;
