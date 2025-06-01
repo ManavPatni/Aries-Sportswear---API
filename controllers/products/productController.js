@@ -188,6 +188,7 @@ const getAllVariants = async (req, res) => {
             `
             SELECT v.*, 
                    p.name AS productName, 
+                   p.id AS productId, 
                    p.sub_category_id AS product_sub_category_id 
             FROM variant v
             JOIN product p ON v.product_id = p.id
@@ -195,6 +196,34 @@ const getAllVariants = async (req, res) => {
             `,
             [parseInt(limit), parseInt(offset)]
         );
+
+        if (variants.length === 0) {
+            return res.status(200).json({ variants: [] });
+        }
+
+        // Get all productIds from the variants
+        const productIds = [...new Set(variants.map(v => v.productId))];
+
+        // Get all tags for those productIds
+        const placeholders = productIds.map(() => '?').join(',');
+        const [tagRows] = await db.query(`
+            SELECT pt.productId, t.name 
+            FROM product_tag pt
+            JOIN tag t ON pt.tagId = t.id
+            WHERE pt.productId IN (${placeholders})
+        `, productIds);
+
+        // Map productId -> tags[]
+        const tagMap = {};
+        for (const row of tagRows) {
+            if (!tagMap[row.productId]) tagMap[row.productId] = [];
+            tagMap[row.productId].push(row.name);
+        }
+
+        // Add tags to each variant
+        for (const variant of variants) {
+            variant.tags = tagMap[variant.productId] || [];
+        }
 
         res.json({ variants });
     } catch (err) {
@@ -220,6 +249,7 @@ const getFilteredVariants = async (req, res) => {
         let query = `
             SELECT v.*, 
                    p.name AS productName, 
+                   p.id AS productId,
                    p.sub_category_id AS product_sub_category_id, 
                    sc.category_id, 
                    c.name AS categoryName, 
@@ -272,11 +302,38 @@ const getFilteredVariants = async (req, res) => {
             query += ' AND v.stock > 0';
         }
 
-        // Apply LIMIT and OFFSET for pagination
         query += ' LIMIT ? OFFSET ?';
         params.push(parseInt(limit), parseInt(offset));
 
         const [variants] = await db.query(query, params);
+
+        if (variants.length === 0) {
+            return res.status(200).json({ variants: [] });
+        }
+
+        // Get unique product IDs from variants
+        const productIds = [...new Set(variants.map(v => v.productId))];
+
+        // Fetch tag names for these product IDs
+        const placeholders = productIds.map(() => '?').join(',');
+        const [tagRows] = await db.query(`
+            SELECT pt.productId, t.name 
+            FROM product_tag pt
+            JOIN tag t ON pt.tagId = t.id
+            WHERE pt.productId IN (${placeholders})
+        `, productIds);
+
+        // Map tags by productId
+        const tagMap = {};
+        for (const row of tagRows) {
+            if (!tagMap[row.productId]) tagMap[row.productId] = [];
+            tagMap[row.productId].push(row.name);
+        }
+
+        // Attach tags to each variant
+        for (let variant of variants) {
+            variant.tags = tagMap[variant.productId] || [];
+        }
 
         res.status(200).json({ variants });
     } catch (err) {
@@ -294,6 +351,7 @@ const getProductById = async (req, res) => {
             return res.status(404).json({ message: 'Product not found' });
         }
 
+        //  Get variants
         const [variants] = await db.query(`
             SELECT * FROM variant 
             WHERE product_id = ? 
@@ -303,6 +361,16 @@ const getProductById = async (req, res) => {
             const [images] = await db.query(`SELECT * FROM variant_image WHERE variant_id = ?`, [variant.id]);
             variant.images = images;
         }
+
+        // Get tags (names) for product
+        const [tags] = await db.query(`
+            SELECT tag.name 
+            FROM tag 
+            INNER JOIN product_tag ON product_tag.tagId = tag.id 
+            WHERE product_tag.productId = ?
+        `, [id]);
+
+        product.tags = tags.map(tag => tag.name); // just the names as array
 
         res.json({
             product,
@@ -315,29 +383,61 @@ const getProductById = async (req, res) => {
 
 const addTagToProduct = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
-    
+
     const { productId, tagId } = req.body;
 
-    if (!productId || !tagId) {
-        return res.status(400).json({ message: 'productId and tagId are required.' });
+    if (!productId || !Array.isArray(tagId) || tagId.length === 0) {
+        return res.status(400).json({ message: 'productId and tagId[] are required.' });
     }
 
     try {
-        const [product, tag] = await Promise.all([
-            productModel.findById(productId),
-            tagModel.findById(tagId),
-        ]);
+        // Check if product exists
+        const [productRows] = await productModel.findById(productId);
+        if (productRows.length === 0) {
+            return res.status(404).json({ message: 'Product not found.' });
+        }
 
-        if (!product) return res.status(404).json({ message: 'Product not found.' });
-        if (!tag) return res.status(404).json({ message: 'Tag not found.' });
+        // Validate all tag IDs
+        const placeholders = tagId.map(() => '?').join(',');
+        const [tagRows] = await db.query(`SELECT id FROM tag WHERE id IN (${placeholders})`, tagId);
 
-        await productTagModel.create({ productId, tagId });
+        const foundTagIds = tagRows.map(tag => tag.id.toString());
+        const notFound = tagId.filter(id => !foundTagIds.includes(id.toString()));
+        if (notFound.length > 0) {
+            return res.status(404).json({ message: 'Some tags not found.', notFound });
+        }
 
-        return res.status(200).json({ message: 'Tag applied successfully.' });
+        // Get current tag IDs for the product
+        const [currentTags] = await db.query(
+            'SELECT tagId FROM product_tag WHERE productId = ?',
+            [productId]
+        );
+        const currentTagIds = currentTags.map(row => row.tagId.toString());
+
+        // Determine tags to add & remove
+        const tagsToAdd = foundTagIds.filter(id => !currentTagIds.includes(id));
+        const tagsToRemove = currentTagIds.filter(id => !foundTagIds.includes(id));
+
+        // Add missing tags
+        for (const id of tagsToAdd) {
+            await db.query('INSERT INTO product_tag (productId, tagId) VALUES (?, ?)', [productId, id]);
+        }
+
+        // Remove extra tags
+        for (const id of tagsToRemove) {
+            await db.query('DELETE FROM product_tag WHERE productId = ? AND tagId = ?', [productId, id]);
+        }
+
+        return res.status(200).json({
+            message: 'Tags synced successfully.',
+            added: tagsToAdd,
+            removed: tagsToRemove
+        });
+
     } catch (err) {
-        console.error('Error adding tag to product:', err);
+        console.error('Error syncing tags for product:', err);
         return res.status(500).json({
-            message: 'Failed to apply tag to product',
+            message: 'Failed to sync tags for product',
             error: err.message,
         });
     }
