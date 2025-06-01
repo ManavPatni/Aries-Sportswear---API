@@ -1,6 +1,6 @@
 const db = require('../../db/database');
 
-const getRecommendedProductsByTags = async (req, res) => {
+const getRecommendedVariants = async (req, res) => {
 
     const tagIds = [1, 2];
 
@@ -9,10 +9,14 @@ const getRecommendedProductsByTags = async (req, res) => {
 
     try {
         const placeholders = tagIds.map(() => '?').join(', ');
-        const [products] = await db.query(
+
+        const [variants] = await db.query(
             `
-            SELECT DISTINCT p.*
-            FROM product p
+            SELECT v.*, 
+                   p.name AS productName, 
+                   p.sub_category_id AS product_sub_category_id 
+            FROM variant v
+            JOIN product p ON v.product_id = p.id
             JOIN product_tag pt ON p.id = pt.product_id
             WHERE pt.tag_id IN (${placeholders})
             LIMIT ? OFFSET ?
@@ -20,33 +24,16 @@ const getRecommendedProductsByTags = async (req, res) => {
             [...tagIds, limit, offset]
         );
 
-        for (let product of products) {
-            const [variants] = await db.query(
-                `SELECT * FROM variant WHERE product_id = ?`,
-                [product.id]
-            );
-
-            for (let variant of variants) {
-                const [images] = await db.query(
-                    `SELECT * FROM variant_image WHERE variant_id = ?`,
-                    [variant.id]
-                );
-                variant.images = images;
-            }
-
-            product.variants = variants;
-        }
-
-        return res.status(200).json({ products });
+        return res.status(200).json({ variants });
     } catch (err) {
-        console.error('Error fetching recommended products by tags:', err);
+        console.error('Error fetching recommended variants:', err);
         return res.status(500).json({
-            message: 'Failed to fetch recommended products',
+            message: 'Failed to fetch recommended variants',
             error: err.message
         });
     }
 };
 
 module.exports = {
-    getRecommendedProductsByTags
+    getRecommendedVariants
 };
