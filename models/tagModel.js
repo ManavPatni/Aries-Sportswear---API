@@ -7,6 +7,13 @@ exports.create = async (data) => {
     );
 };
 
+exports.findById = async (id) => {
+    return db.query(
+        'SELECT * FROM tag WHERE id = ? LIMIT 1',
+        [id]
+    );
+};
+
 exports.getAllTags = async () => {
     return db.query(
         'SELECT * FROM tag'
