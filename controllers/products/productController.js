@@ -93,7 +93,8 @@ const addProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
-    const productId = req.params;
+    const { id: productId } = req.params;
+
     const { name, subCategoryId } = req.body;
     if (!productId || !name || !subCategoryId) {
         return res.status(400).json({ message: 'Missing required fields' });
@@ -111,7 +112,7 @@ const updateProduct = async (req, res) => {
 const updateVariant = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
-    const variantId = req.params;
+    const { id: variantId } = req.params;
 
     const {
         description, color, size,
