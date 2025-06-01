@@ -5,7 +5,6 @@ const variantModel = require('../../models/variantModel');
 const variantImageModel = require('../../models/variantImageModel');
 const productTagModel = require('../../models/productTagModel');
 const tagModel = require('../../models/tagModel');
-const productTagModel = require('../../models/productTagModel')
 
 const addProduct = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
