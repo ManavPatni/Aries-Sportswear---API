@@ -409,7 +409,7 @@ const addTagToProduct = async (req, res) => {
 
         // Get current tag IDs for the product
         const [currentTags] = await db.query(
-            'SELECT tagId FROM product_tag WHERE product_id = ?',
+            'SELECT tag_id FROM product_tag WHERE product_id = ?',
             [productId]
         );
         const currentTagIds = currentTags.map(row => row.tagId.toString());
