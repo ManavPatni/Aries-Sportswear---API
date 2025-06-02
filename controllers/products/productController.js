@@ -412,7 +412,7 @@ const addTagToProduct = async (req, res) => {
             'SELECT tag_id FROM product_tag WHERE product_id = ?',
             [productId]
         );
-        const currentTagIds = currentTags.map(row => row.tagId.toString());
+        const currentTagIds = currentTags.map(row => row.tag_id.toString());
 
         // Determine tags to add & remove
         const tagsToAdd = foundTagIds.filter(id => !currentTagIds.includes(id));
