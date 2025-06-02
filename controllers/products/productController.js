@@ -216,8 +216,8 @@ const getAllVariants = async (req, res) => {
         // Map productId -> tags[]
         const tagMap = {};
         for (const row of tagRows) {
-            if (!tagMap[row.productId]) tagMap[row.productId] = [];
-            tagMap[row.productId].push(row.name);
+            if (!tagMap[row.product_id]) tagMap[row.product_id] = [];
+            tagMap[row.product_id].push(row.name);
         }
 
         // Add tags to each variant
@@ -326,8 +326,8 @@ const getFilteredVariants = async (req, res) => {
         // Map tags by productId
         const tagMap = {};
         for (const row of tagRows) {
-            if (!tagMap[row.productId]) tagMap[row.productId] = [];
-            tagMap[row.productId].push(row.name);
+            if (!tagMap[row.product_id]) tagMap[row.product_id] = [];
+            tagMap[row.product_Id].push(row.name);
         }
 
         // Attach tags to each variant
