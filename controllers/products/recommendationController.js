@@ -5,12 +5,12 @@ const getVariantsByTags = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const offset = parseInt(req.query.offset) || 0;
 
-    if (!tagIds || tagIds.length === 0) {
+    if (!tagId || tagIds.length === 0) {
         return res.status(400).json({ message: 'Tag IDs are required.' });
     }
 
     try {
-        const placeholders = tagIds.map(() => '?').join(', ');
+        const placeholders = tagId.map(() => '?').join(', ');
 
         // Get distinct product IDs matching the tags
         const [products] = await db.query(
@@ -21,7 +21,7 @@ const getVariantsByTags = async (req, res) => {
             WHERE pt.tag_id IN (${placeholders})
             LIMIT ? OFFSET ?
             `,
-            [...tagIds, limit, offset]
+            [...tagId, limit, offset]
         );
 
         if (products.length === 0) {
