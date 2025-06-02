@@ -327,7 +327,7 @@ const getFilteredVariants = async (req, res) => {
         const tagMap = {};
         for (const row of tagRows) {
             if (!tagMap[row.product_id]) tagMap[row.product_id] = [];
-            tagMap[row.product_Id].push(row.name);
+            tagMap[row.product_id].push(row.name);
         }
 
         // Attach tags to each variant
