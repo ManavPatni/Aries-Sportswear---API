@@ -113,7 +113,6 @@ const updateVariant = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
     const { id: variantId } = req.params;
-
     const {
         description, color, size,
         price, stock, external_link, isBase
@@ -122,6 +121,27 @@ const updateVariant = async (req, res) => {
     if (!variantId) return res.status(400).json({ message: 'Variant ID is required' });
 
     try {
+        // Get the product_id of the current variant
+        const [variantRows] = await db.query(
+            `SELECT product_id FROM variant WHERE id = ?`,
+            [variantId]
+        );
+
+        if (variantRows.length === 0) {
+            return res.status(404).json({ message: 'Variant not found' });
+        }
+
+        const productId = variantRows[0].product_id;
+
+        // If this variant is being set as base, unset base from other variants of the same product
+        if (isBase) {
+            await db.query(
+                `UPDATE variant SET is_base = 0 WHERE product_id = ?`,
+                [productId]
+            );
+        }
+
+        // Update the current variant
         await db.query(
             `UPDATE variant 
              SET description = ?, color = ?, size = ?, price = ?, stock = ?, external_link = ?, is_base = ? 
