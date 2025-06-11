@@ -23,8 +23,8 @@ cron.schedule('0 0 * * *', async () => {
     }
 });
 
-// 2. Every 30 minutes
-cron.schedule('*/30 * * * *', async () => {
+// 2. Every 15 minutes
+cron.schedule('*/15 * * * *', async () => {
     const client = await db.connect();
     try {
         await client.query('BEGIN');

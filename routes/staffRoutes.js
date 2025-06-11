@@ -19,6 +19,7 @@ router.put('/details', authenticateToken, profileController.updateDetails);
 router.post('/', authenticateToken, staffController.addStaffMember);
 router.get('/', authenticateToken, staffController.getAllStaffMembers);
 router.get('/:id', authenticateToken, staffController.getStaffById);
+router.put('/:id', authenticateToken, staffController.updateStaffDetails);
 router.delete('/:id', authenticateToken, staffController.deleteStaffMember);
 
 module.exports = router;

@@ -1,11 +1,10 @@
 require('dotenv').config();
+require('./cron/cronJobs');
 const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const productRoutes = require('./routes/productRoutes');
-const cron = require('./cron/cronJobs');
-const db = require('./db/database');
 
 const app = express();
 

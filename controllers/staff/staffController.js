@@ -95,6 +95,95 @@ const getStaffById = async (req, res) => {
     }
 };
 
+const updateStaffDetails = async (req, res) => {
+  const { id } = req.params;
+  const requesterRole = req.staff.role;
+  const imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://ariessportswear.com';
+
+  if (!allowedRoles.includes(requesterRole)) {
+    return res.status(403).json({ message: 'Unauthorized' });
+  }
+
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ message: err.message || 'Avatar upload failed' });
+    }
+
+    try {
+      const staff = await Staff.findById(id);
+      if (!staff) return res.status(404).json({ message: 'Staff not found' });
+
+      // Prevent admin from updating super-admin
+      if (staff.role === 'super-admin' && requesterRole === 'admin') {
+        return res.status(403).json({ message: 'Admins cannot update Super Admins' });
+      }
+
+      const { name, email } = req.body;
+      const updates = [];
+      const values = [];
+
+      // Update name
+      if (name) {
+        updates.push('name = ?');
+        values.push(name);
+      }
+
+      // Update email (with duplicate check)
+      if (email && email !== staff.email) {
+        const [existing] = await db.query('SELECT id FROM staff WHERE email = ? AND id != ?', [email, id]);
+        if (existing.length > 0) {
+          return res.status(409).json({ message: 'Email already in use by another staff' });
+        }
+        updates.push('email = ?');
+        values.push(email);
+      }
+
+      // Handle avatar upload
+      let newAvatar = null;
+      if (req.file) {
+        const ext = path.extname(req.file.originalname);
+        newAvatar = `/uploads/staff/avatar/${id}${ext}`;
+        await mediaController.uploadToServer(req.file.buffer, newAvatar);
+        updates.push('avatar = ?');
+        values.push(newAvatar);
+      }
+
+      if (updates.length === 0) {
+        return res.status(400).json({ message: 'No data provided to update' });
+      }
+
+      const updateQuery = `UPDATE staff SET ${updates.join(', ')} WHERE id = ?`;
+      values.push(id);
+
+      const [result] = await db.query(updateQuery, values);
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Staff not found' });
+      }
+
+      // Delete old avatar if replaced
+      if (staff.avatar && newAvatar && staff.avatar !== newAvatar) {
+        try {
+          await mediaController.deleteFromServer(staff.avatar);
+        } catch (err) {
+          console.warn('Failed to delete old avatar:', err.message);
+        }
+      }
+
+      const updatedStaff = await Staff.findById(id);
+      const avatarUrl = updatedStaff.avatar ? `${imageBaseUrl}${updatedStaff.avatar}` : null;
+
+      return res.json({
+        message: 'Staff profile updated successfully',
+        staff: { ...updatedStaff, avatarUrl },
+      });
+
+    } catch (error) {
+      console.error('Update error:', error);
+      res.status(500).json({ message: 'Failed to update staff profile', error: error.message });
+    }
+  });
+};
+
 const deleteStaffMember = async (req, res) => {
     const { id } = req.params;
     const currentRole = req.staff.role;
@@ -104,6 +193,10 @@ const deleteStaffMember = async (req, res) => {
         return res.status(403).json({ message: 'Unauthorized' });
     }
 
+    if (req.staff.id === parseInt(id)) {
+        return res.status(400).json({ message: 'Cannot delete yourself' });
+    }
+
     try {
         const staff = await Staff.findById(id);
 
@@ -111,7 +204,10 @@ const deleteStaffMember = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Staff not found' });
         }
 
-        // Delete avatar from Bunny (if exists)
+        if (staff.role === "super-admin") {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
         if (staff.avatar) {
             try {
                 await mediaController.deleteFromServer(staff.avatar);
@@ -120,7 +216,6 @@ const deleteStaffMember = async (req, res) => {
             }
         }
 
-        // Delete the staff record
         const [result] = await db.query('DELETE FROM staff WHERE id = ?', [id]);
 
         if (result.affectedRows === 0) {
@@ -145,5 +240,6 @@ module.exports = {
     addStaffMember,
     getAllStaffMembers,
     getStaffById,
+    updateStaffDetails,
     deleteStaffMember
 };
