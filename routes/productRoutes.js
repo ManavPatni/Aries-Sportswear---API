@@ -30,12 +30,13 @@ router.post('/sub-category', authenticateToken, categoryController.addSubCategor
 router.put('/sub-category', authenticateToken, categoryController.updateSubCategory);
 router.delete('/sub-category/:id', authenticateToken, categoryController.deleteSubCategory);
 // Products
-router.post('/product', authenticateToken, upload.any(), productController.addProduct);
+router.post('/add-product', authenticateToken, upload.any(), productController.addProduct);
 router.put('/product/:id', authenticateToken, productController.updateProduct);
-router.put('/product/variant/:id', authenticateToken, productController.updateVariant);
 router.delete('/product/:id', authenticateToken, productController.deleteProduct);
-router.delete('/product/variant/:id', authenticateToken, productController.deleteVariant);
 router.post('/product/tag', authenticateToken, productController.addTagToProduct);
+router.put('/product/variant-detail/:id', authenticateToken, productController.updateVariant);
+router.post('/product/variant/:variantId/images', authenticateToken, upload.array('images', 5), productController.uploadVariantImages);
+router.delete('/product/variant/:id', authenticateToken, productController.deleteVariant);
 //Tags
 router.post('/tags', authenticateToken, tagController.addTag);
 router.get('/tags', authenticateToken, tagController.getAllTags);

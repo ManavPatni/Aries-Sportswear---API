@@ -2,8 +2,8 @@ const db = require('../db/database');
 
 exports.create = async (data) => {
     return db.query(
-        'INSERT INTO variant (product_id, is_base, description, color, size, price, stock, external_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [data.productId, data.isBase, data.description, data.color, data.size, data.price, data.stock, data.external_link]
+        'INSERT INTO variant (product_id, is_base, name, description, color, size, price, stock, external_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [data.productId, data.is_base, data.name, data.description, data.color, data.size, data.price, data.stock, data.external_link]
     );
 };
 

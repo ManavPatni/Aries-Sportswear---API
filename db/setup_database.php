@@ -154,6 +154,7 @@ CREATE TABLE `variant` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `product_id` INT NOT NULL,
     `is_base` TINYINT(1) NOT NULL DEFAULT 0,
+    `name` VARCHAR(255),
     `description` TEXT NOT NULL,
     `color` VARCHAR(45),
     `size` VARCHAR(45),

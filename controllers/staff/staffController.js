@@ -2,9 +2,23 @@ const db = require('../../db/database');
 const Staff = require('../../models/staffModel');
 const bcrypt = require('bcryptjs');
 const mediaController = require('../mediaController');
+const multer = require('multer');
+const path = require('path');
 
-const privilegedRoles = ['super-admin', 'admin'];
+const privilegedRoles = ['super_admin', 'admin'];
 const allowedRoles = ['admin', 'staff'];
+
+// Multer configuration with memory storage
+const upload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only images are allowed'));
+    }
+  }
+}).single('avatar');
 
 const addStaffMember = async (req, res) => {
     const currentRole = req.staff.role;
@@ -100,7 +114,7 @@ const updateStaffDetails = async (req, res) => {
   const requesterRole = req.staff.role;
   const imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://ariessportswear.com';
 
-  if (!allowedRoles.includes(requesterRole)) {
+  if (!privilegedRoles.includes(requesterRole)) {
     return res.status(403).json({ message: 'Unauthorized' });
   }
 
@@ -113,8 +127,8 @@ const updateStaffDetails = async (req, res) => {
       const staff = await Staff.findById(id);
       if (!staff) return res.status(404).json({ message: 'Staff not found' });
 
-      // Prevent admin from updating super-admin
-      if (staff.role === 'super-admin' && requesterRole === 'admin') {
+      // Prevent admin from updating super_admin
+      if (staff.role === 'super_admin' && requesterRole === 'admin') {
         return res.status(403).json({ message: 'Admins cannot update Super Admins' });
       }
 
@@ -204,7 +218,7 @@ const deleteStaffMember = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Staff not found' });
         }
 
-        if (staff.role === "super-admin") {
+        if (staff.role === "super_admin") {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 

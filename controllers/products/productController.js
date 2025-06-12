@@ -1,92 +1,154 @@
 const db = require('../../db/database');
-const subCategoryModel = require('../../models/subCategoryModel');
 const productModel = require('../../models/productModel');
-const variantModel = require('../../models/variantModel');
-const variantImageModel = require('../../models/variantImageModel');
-const productTagModel = require('../../models/productTagModel');
-const tagModel = require('../../models/tagModel');
+const mediaController = require('../mediaController');
 
 const addProduct = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+
     try {
-        const { productId, subCategoryId, name } = req.body;
+        const { productId, subCategoryId, name, variants } = req.body;
         let finalProductId = productId;
-        const variants = JSON.parse(req.body.variants);
 
         if (!Array.isArray(variants) || variants.length === 0) {
+            await connection.rollback();
             return res.status(400).json({ message: 'At least one variant is required.' });
         }
 
-        // Map image files to variant index (e.g., variantImages-0)
-        const variantImagesMap = {};
-        for (const file of req.files) {
-            const match = file.fieldname.match(/^variantImages-(\d+)$/);
-            if (match) {
-                const index = match[1];
-                if (!variantImagesMap[index]) variantImagesMap[index] = [];
-                variantImagesMap[index].push(file);
-            }
-        }
-
-        // Create product
+        // Create or validate product
         if (!finalProductId) {
-            const [result] = await productModel.create({ 
-                subCategoryId: subCategoryId,
-                name: name 
-            });
-
+            const [result] = await connection.query(
+                'INSERT INTO product (sub_category_id, name) VALUES (?, ?)',
+                [subCategoryId, name]
+            );
             finalProductId = result.insertId;
         } else {
-            const [existingProduct] = await productModel.findById(finalProductId);
-            if (!existingProduct || existingProduct.length === 0) {
+            const [existingProduct] = await connection.query(
+                'SELECT * FROM product WHERE id = ? LIMIT 1',
+                [finalProductId]
+            );
+            if (!existingProduct.length) {
+                await connection.rollback();
                 return res.status(400).json({ message: 'Invalid productId provided. Product not found.' });
             }
         }
 
-        let baseVariantExists = await variantModel.baseVariantExists(finalProductId);
+        const [baseCheck] = await connection.query(
+            'SELECT 1 FROM variant WHERE product_id = ? AND is_base = 1 LIMIT 1',
+            [finalProductId]
+        );
 
-        for (let i = 0; i < variants.length; i++) {
-            const variant = variants[i];
+        let baseVariantExists = baseCheck.length > 0;
 
-            if (variant.isBase && baseVariantExists) {
+        for (const variant of variants) {
+            if (variant.is_base && baseVariantExists) {
+                await connection.rollback();
                 return res.status(400).json({ message: 'Only one base variant is allowed per product.' });
             }
 
-            const [variantResult] = await variantModel.create({
-                productId: finalProductId,
-                isBase: variant.isBase ? 1 : 0,
-                description: variant.description,
-                color: variant.color,
-                size: variant.size,
-                price: variant.price,
-                stock: variant.stock,
-                external_link: variant.external_link || null
-            });
+            const [variantResult] = await connection.query(
+                'INSERT INTO variant (product_id, is_base, name, description, color, size, price, stock, external_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [finalProductId, variant.is_base ? 1 : 0, variant.name, variant.description, variant.color, variant.size, variant.price, variant.stock, variant.external_link || null]
+            );
+
+            if (variant.is_base) baseVariantExists = true;
 
             const variantId = variantResult.insertId;
-            if (variant.isBase) baseVariantExists = true;
 
-            // Handle images
-            const variantFiles = variantImagesMap[i] || [];
-            for (const file of variantFiles) {
-                const uploaded = await mediaController.uploadToServer(file, `/uploads/products/${finalProductId}-${variantId}`);
-                await variantImageModel.create({ variantId, path: uploaded.path });
-            }
-
-            // Tags
             if (Array.isArray(variant.tags)) {
                 for (const tagId of variant.tags) {
-                    await productTagModel.create({ productId: finalProductId, tagId });
+                    await connection.query(
+                        'INSERT INTO product_tag (product_id, tag_id) VALUES (?, ?)',
+                        [finalProductId, tagId]
+                    );
                 }
             }
         }
 
+        await connection.commit();
+        connection.release();
         return res.status(200).json({ message: 'Product and variants added successfully', productId: finalProductId });
 
+    } catch (error) {
+        await connection.rollback();
+        connection.release();
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+
+const uploadVariantImages = async (req, res) => {
+    if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
+
+    const variantId = req.params.variantId;
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+
+    try {
+        console.log('Incoming files:', req.files);
+
+        const uploadedFiles = req.files || [];
+
+        if (!Array.isArray(uploadedFiles) || uploadedFiles.length === 0) {
+            await connection.rollback();
+            connection.release();
+            console.log('No files provided');
+            return res.status(400).json({ message: 'No files provided' });
+        }
+
+        const [rows] = await connection.query(
+            'SELECT COUNT(*) as count FROM variant_image WHERE variant_id = ?',
+            [variantId]
+        );
+        const existingCount = rows[0].count;
+        console.log('Existing image count:', existingCount);
+
+        if (existingCount + uploadedFiles.length > 5) {
+            await connection.rollback();
+            connection.release();
+            return res.status(400).json({ message: 'Each variant can have a maximum of 5 images' });
+        }
+
+        const uploadedPaths = [];
+
+        for (const file of uploadedFiles) {
+            const fileName = `${variantId}-${Date.now()}-${file.originalname}`;
+            const uploadPath = `/products/${fileName}`;
+            console.log('Uploading file to:', uploadPath);
+
+            await mediaController.uploadToServer(file.buffer, uploadPath);
+            console.log('Uploaded to server');
+
+            const [result] = await connection.query(
+                'INSERT INTO variant_image (variant_id, path) VALUES (?, ?)',
+                [variantId, uploadPath]
+            );
+
+            console.log('Inserted to DB:', result);
+
+            if (!result.insertId) {
+                throw new Error(`DB insert failed for ${file.originalname}`);
+            }
+
+            uploadedPaths.push(uploadPath);
+        }
+
+        await connection.commit();
+        connection.release();
+
+        console.log('Uploaded paths:', uploadedPaths);
+
+        return res.status(200).json({
+            message: 'Images uploaded successfully',
+            uploaded: uploadedPaths
+        });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Internal server error' });
+        await connection.rollback();
+        connection.release();
+        console.error('Image Upload Error:', err);
+        return res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 };
 
@@ -115,7 +177,7 @@ const updateVariant = async (req, res) => {
     const { id: variantId } = req.params;
     const {
         description, color, size,
-        price, stock, external_link, isBase
+        price, stock, external_link, is_base
     } = req.body;
 
     if (!variantId) return res.status(400).json({ message: 'Variant ID is required' });
@@ -134,7 +196,7 @@ const updateVariant = async (req, res) => {
         const productId = variantRows[0].product_id;
 
         // If this variant is being set as base, unset base from other variants of the same product
-        if (isBase) {
+        if (is_base) {
             await db.query(
                 `UPDATE variant SET is_base = 0 WHERE product_id = ?`,
                 [productId]
@@ -146,7 +208,7 @@ const updateVariant = async (req, res) => {
             `UPDATE variant 
              SET description = ?, color = ?, size = ?, price = ?, stock = ?, external_link = ?, is_base = ? 
              WHERE id = ?`,
-            [description, color, size, price, stock, external_link || null, isBase ? 1 : 0, variantId]
+            [description, color, size, price, stock, external_link || null, is_base ? 1 : 0, variantId]
         );
 
         return res.status(200).json({ message: 'Variant updated successfully' });
@@ -260,7 +322,7 @@ const getFilteredVariants = async (req, res) => {
             priceMax,
             categoryId,
             subCategoryId,
-            isBase,
+            is_base,
             available,
             limit = 10,
             offset = 0
@@ -313,9 +375,9 @@ const getFilteredVariants = async (req, res) => {
             params.push(parseInt(subCategoryId));
         }
 
-        if (isBase !== undefined) {
+        if (is_base !== undefined) {
             query += ' AND v.is_base = ?';
-            params.push(isBase == 'true' ? 1 : 0);
+            params.push(is_base == 'true' ? 1 : 0);
         }
 
         if (available !== undefined) {
@@ -465,6 +527,7 @@ const addTagToProduct = async (req, res) => {
 
 module.exports = {
     addProduct,
+    uploadVariantImages,
     updateProduct,
     updateVariant,
     deleteProduct,
@@ -474,8 +537,3 @@ module.exports = {
     getProductById,
     addTagToProduct
 };
-
-/*
-TODO 
--   Update variant image
-*/
