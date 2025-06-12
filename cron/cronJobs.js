@@ -45,7 +45,7 @@ createCronTask(
   '*/15 * * * *',
   'Expired OTP Request Cleanup',
   (database) => {
-    const query = 'DELETE FROM otp_requests WHERE expires_at < NOW();';
+    const query = 'DELETE FROM otp_request WHERE expires_at < NOW();';
     return database.query(query);
   }
 );

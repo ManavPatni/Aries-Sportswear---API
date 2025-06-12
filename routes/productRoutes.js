@@ -4,8 +4,6 @@ const authenticateToken = require('../middleware/authMiddleware');
 const categoryController = require('../controllers/products/categoryController');
 const productController = require('../controllers/products/productController');
 const recommendationController = require('../controllers/products/recommendationController');
-
-// Corrected the typo in the line below
 const tagController = require('../controllers/products/tagController');
 
 const router = express.Router();
@@ -38,29 +36,26 @@ router.get('/product/:id', productController.getProductById);
 // ====================================================================
 
 // --- Categories ---
-router.post('/categories', authenticateToken, categoryController.addCategory);
-router.put('/categories/:id', authenticateToken, categoryController.updateCategory);
-router.delete('/categories/:id', authenticateToken, categoryController.deleteCategory);
+router.post('/category', authenticateToken, categoryController.addCategory);
+router.put('/category/:id', authenticateToken, categoryController.updateCategory);
+router.delete('/category/:id', authenticateToken, categoryController.deleteCategory);
 
 // --- Sub-Categories ---
-router.post('/sub-categories', authenticateToken, categoryController.addSubCategory);
-router.put('/sub-categories/:id', authenticateToken, categoryController.updateSubCategory);
-router.delete('/sub-categories/:id', authenticateToken, categoryController.deleteSubCategory);
+router.post('/sub-category', authenticateToken, categoryController.addSubCategory);
+router.put('/sub-category/:id', authenticateToken, categoryController.updateSubCategory);
+router.delete('/sub-category/:id', authenticateToken, categoryController.deleteSubCategory);
 
 // --- Tags ---
 router.get('/tags', authenticateToken, tagController.getAllTags);
-router.post('/tags', authenticateToken, tagController.addTag);
-// Note: Deleting/updating tags would follow a similar pattern:
-// router.put('/tags/:id', ...);
-// router.delete('/tags/:id', ...);
+router.post('/tag', authenticateToken, tagController.addTag);
 
 // --- Products ---
 // Create a new product. Note: This only handles product data, not images.
 // Images are uploaded separately to a variant ID after the product is created.
 router.post('/product', authenticateToken, upload.none(), productController.addProduct);
 
-router.put('/products/:id', authenticateToken, productController.updateProduct);
-router.delete('/products/:id', authenticateToken, productController.deleteProduct);
+router.put('/product/:id', authenticateToken, productController.updateProduct);
+router.delete('/product/:id', authenticateToken, productController.deleteProduct);
 
 // Sync tags for a specific variant. This will add/remove tags to match the provided list.
 router.put('/products/variant/:variantId/tags', authenticateToken, productController.syncVariantTags);

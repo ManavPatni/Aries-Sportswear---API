@@ -51,7 +51,8 @@ const addCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
-  const { id, name } = req.body;
+  const { id } = req.params;
+  const { name } = req.body;
   if (!id || !name) return res.status(400).json({ message: 'ID and name are required' });
 
   try {
