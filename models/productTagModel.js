@@ -1,9 +1,9 @@
 const db = require('../db/database');
 
-exports.create = async (data) => {
+exports.insert = async (data) => {
     return db.query(
-        'INSERT INTO product_tag (product_id, tag_id) VALUES (?, ?)',
-        [data.productId, data.tagId]
+        'INSERT INTO product_tag (variant_id, tag_id) VALUES (?, ?)',
+        [data.variantId, data.tagId]
     );
 };
 
