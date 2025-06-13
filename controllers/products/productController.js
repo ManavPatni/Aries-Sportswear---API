@@ -139,6 +139,8 @@ const addProduct = withTransaction(async (req, res, connection) => {
 
 });
 
+const path = require('path'); // Required for getting file extension
+
 const uploadVariantImages = withTransaction(async (req, res, connection) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
 
@@ -162,7 +164,8 @@ const uploadVariantImages = withTransaction(async (req, res, connection) => {
 
     const uploadedPaths = [];
     for (const file of uploadedFiles) {
-        const fileName = `${variantId}-${Date.now()}`;
+        const extension = path.extname(file.originalname) || '.jpg'; // default to .jpg if missing
+        const fileName = `${variantId}-${Date.now()}${extension}`;
         const uploadPath = `/products/${fileName}`;
 
         await mediaController.uploadToServer(file.buffer, uploadPath);
