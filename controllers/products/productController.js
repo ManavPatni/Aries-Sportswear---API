@@ -108,6 +108,8 @@ const addProduct = withTransaction(async (req, res, connection) => {
     let baseVariantExists = baseCheck.length > 0;
 
     // --- 3. Insert Variants ---
+    const variantIds = new Set();
+
     for (const variant of variants) {
         if (variant.is_base && baseVariantExists) {
             throw new Error('Only one base variant is allowed per product.');
@@ -117,6 +119,8 @@ const addProduct = withTransaction(async (req, res, connection) => {
             'INSERT INTO variant (product_id, is_base, name, description, color, size, price, stock, external_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [finalProductId, !!variant.is_base, variant.name, variant.description, variant.color, variant.size, variant.price, variant.stock, variant.external_link || null]
         );
+
+        variantIds.add(variantResult.insertId);
 
         if (variant.is_base) baseVariantExists = true;
 
@@ -129,8 +133,10 @@ const addProduct = withTransaction(async (req, res, connection) => {
 
     return res.status(201).json({
         message: 'Product and variants added successfully',
-        productId: finalProductId
+        productId: finalProductId,
+        variantIds: Array.from(variantIds)
     });
+
 });
 
 const uploadVariantImages = withTransaction(async (req, res, connection) => {
