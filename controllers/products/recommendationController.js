@@ -49,7 +49,7 @@ const getVariantsByTag = async (req, res) => {
 
         // Fetch all images for the retrieved variants
         const [images] = await db.query(
-            `SELECT variant_id, path FROM variant_image WHERE variant_id IN (?)`,
+            `SELECT id, variant_id, path FROM variant_image WHERE variant_id IN (?)`,
             [variantIds]
         );
 
@@ -68,7 +68,7 @@ const getVariantsByTag = async (req, res) => {
         const imageMap = images.reduce((acc, image) => {
             if (!acc[image.variant_id]) acc[image.variant_id] = [];
             const fullUrl = `${imageBaseUrl.replace(/\/$/, '')}${image.path}`;
-            acc[image.variant_id].push(fullUrl);
+            acc[image.variant_id].push({ id: image.id, url: fullUrl });
             return acc;
         }, {});
 

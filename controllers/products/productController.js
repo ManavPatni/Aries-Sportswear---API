@@ -40,7 +40,7 @@ const _attachDataToVariants = async (variants, connection) => {
     const imageBaseUrl = process.env.IMAGE_BASE_URL || '';
 
     const [images] = await connection.query(
-        `SELECT variant_id, path FROM variant_image WHERE variant_id IN (?)`,
+        `SELECT id, variant_id, path FROM variant_image WHERE variant_id IN (?)`,
         [variantIds]
     );
 
@@ -56,7 +56,7 @@ const _attachDataToVariants = async (variants, connection) => {
     const imageMap = images.reduce((acc, image) => {
         if (!acc[image.variant_id]) acc[image.variant_id] = [];
         const fullUrl = `${imageBaseUrl.replace(/\/$/, '')}${image.path}`;
-        acc[image.variant_id].push(fullUrl);
+        acc[image.variant_id].push({ id: image.id, url: fullUrl });
         return acc;
     }, {});
 
@@ -341,7 +341,7 @@ const deleteProduct = withTransaction(async (req, res, connection) => {
 
     // 2. Delete physical files
     if (images.length > 0) {
-        const deletePromises = images.map(img => mediaController.deleteImageFromServer(img.path));
+        const deletePromises = images.map(img => mediaController.deleteFromServer(img.path));
         await Promise.all(deletePromises);
     }
     
@@ -364,7 +364,7 @@ const deleteVariant = withTransaction(async (req, res, connection) => {
 
     const [images] = await connection.query('SELECT path FROM variant_image WHERE variant_id = ?', [variantId]);
     if (images.length > 0) {
-        const deletePromises = images.map(img => mediaController.deleteImageFromServer(img.path));
+        const deletePromises = images.map(img => mediaController.deleteFromServer(img.path));
         await Promise.all(deletePromises);
     }
 
@@ -388,7 +388,7 @@ const deleteVariantImage = withTransaction(async (req, res, connection) => {
         return res.status(404).json({ message: 'Image not found.' });
     }
     
-    await mediaController.deleteImageFromServer(image.path);
+    await mediaController.deleteFromServer(image.path);
     await connection.query('DELETE FROM variant_image WHERE id = ?', [imageId]);
     
     return res.status(200).json({ message: 'Image deleted successfully.' });
