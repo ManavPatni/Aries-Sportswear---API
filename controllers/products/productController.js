@@ -125,8 +125,8 @@ const addProduct = withTransaction(async (req, res, connection) => {
         if (variant.is_base) baseVariantExists = true;
 
         // We also do a bulk insert for efficiency.
-        if (Array.isArray(variant.tags) && variant.tags.length > 0) {
-            const tagValues = variant.tags.map(tagId => [variantResult.insertId, tagId]);
+        if (Array.isArray(variant.tagIds) && variant.tagIds.length > 0) {
+            const tagValues = variant.tagIds.map(tagId => [variantResult.insertId, tagId]);
             await connection.query('INSERT INTO product_tag (variant_id, tag_id) VALUES ?', [tagValues]);
         }
     }
