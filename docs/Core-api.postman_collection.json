@@ -1,0 +1,3646 @@
+{
+	"info": {
+		"_postman_id": "58d8488e-0f03-4826-9bbf-8a82e90e5247",
+		"name": "Core-api",
+		"description": "This document contains a for documentation for core apis of Aries Sportswear.\n\n---\n\n## Authentication\n\n`Bearer Token for secified apis.`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19091104",
+		"_collection_link": "https://devmnv.postman.co/workspace/Aries-Sportswear~39adaf7d-7809-424c-802a-d4d15e49be96/collection/19091104-58d8488e-0f03-4826-9bbf-8a82e90e5247?action=share&source=collection_link&creator=19091104"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Send Otp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"devmnv108@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/send-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"send-otp"
+							]
+						},
+						"description": "Send 6-digits otp to provided email for verification"
+					},
+					"response": [
+						{
+							"name": "Send Otp",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"devmnv108@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/send-otp",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"send-otp"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "37"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"25-LMoLOPwPAi0ny3UjP1UeDLB9T8Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:42:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"OTP sent to your email.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"otp\": \"815744\",\r\n    \"email\": \"devmnv108@gmail.com\",\r\n    \"password\": \"test123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"register"
+							]
+						},
+						"description": "Register new user with the otp for verification"
+					},
+					"response": [
+						{
+							"name": "Register User",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"otp\": \"815744\",\r\n    \"email\": \"devmnv108@gmail.com\",\r\n    \"password\": \"test123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "286"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"11e-anfAetMRyNZOWz1Idk1SW9Qra08\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:44:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User registered successfully.\",\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI3LCJpYXQiOjE3NDk3MzU4NzgsImV4cCI6MTc0OTczOTQ3OH0.-NQN27LJ6hILLeCjZp2H5EBxx0zo_VGuwuawVnm3o88\",\n    \"refreshToken\": \"e0a9835ba0289fa437c2b4195a787ee3fc1ed44578458d57dbe38d8478435174\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"mnvpatni@gmail.com\",\r\n    \"password\": \"manav\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						},
+						"description": "Login to existing users account"
+					},
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"mnvpatni@gmail.com\",\r\n    \"password\": \"manav\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "244"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f4-ESfMIhDGjryKLYzsyPq//0ZPsIU\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:38:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIzLCJpYXQiOjE3NDk3MzU1MjAsImV4cCI6MTc0OTczOTEyMH0.kchz2OlNACNNExtdCHVTWs4J0cI-V8iixdM5FcXmtvQ\",\n    \"refreshToken\": \"e67054b6bad89988e81430853c4d268873826558bfafa8f58b7704a748291140\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Generate new access token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"e0a9835ba0289fa437c2b4195a787ee3fc1ed44578458d57dbe38d8478435174\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/refresh-token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"refresh-token"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Generate new access token",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refreshToken\": \"e0a9835ba0289fa437c2b4195a787ee3fc1ed44578458d57dbe38d8478435174\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/refresh-token",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"refresh-token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "244"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f4-hxi2TGPcZ1N/vrFgMjfI219Oxdg\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:46:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI3LCJpYXQiOjE3NDk3MzU5ODksImV4cCI6MTc0OTczOTU4OX0.i_S7S685DbiHLI3ZKnziSEDcjCPy4v1lutjztHZEeZk\",\n    \"refreshToken\": \"d13e2fa3d8145ca9adb1bb4fed0678764f0c481e9c835d59d7a5a627aa890e00\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get user details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIzLCJpYXQiOjE3NDk3MzU1MjAsImV4cCI6MTc0OTczOTEyMH0.kchz2OlNACNNExtdCHVTWs4J0cI-V8iixdM5FcXmtvQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"details"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get user details",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/details",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"details"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "211"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"d3-n3q7ba27aULHnIa6E9TiG2jjEFE\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:47:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 23,\n    \"email\": \"mnvpatni@gmail.com\",\n    \"name\": \"Manav\",\n    \"avatar\": \"/uploads/user/avatar/23.jpg\",\n    \"address\": \"Gat no. 707 Dawat nagar kabnoor\",\n    \"avatarUrl\": \"https://ariessportswear.b-cdn.net/uploads/user/avatar/23.jpg\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update user details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIzLCJpYXQiOjE3NDk3MzU1MjAsImV4cCI6MTc0OTczOTEyMH0.kchz2OlNACNNExtdCHVTWs4J0cI-V8iixdM5FcXmtvQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/user/details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"details"
+							]
+						},
+						"description": "All fields are optional. used to update user details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIzLCJpYXQiOjE3NDk3MzU1MjAsImV4cCI6MTc0OTczOTEyMH0.kchz2OlNACNNExtdCHVTWs4J0cI-V8iixdM5FcXmtvQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								""
+							]
+						},
+						"description": "Delete user and all related data"
+					},
+					"response": [
+						{
+							"name": "Delete User",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "54"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"36-U3bFObQjPKn4UTk58ToYjyCEL80\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:52:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"User deleted successfully\"\n}"
+						}
+					]
+				}
+			],
+			"description": "All user specific api are over here"
+		},
+		{
+			"name": "staff",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"manav@gmail.com\",\r\n    \"password\": \"manav\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/staff/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								"login"
+							]
+						},
+						"description": "Login to existing staff members account"
+					},
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"manav@gmail.com\",\r\n    \"password\": \"manav\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/staff/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"staff",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "244"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f4-WxoxEkBlBULIyY6QcevjRRRCfKw\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:54:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3MzY0NjksImV4cCI6MTc0OTc0MDA2OX0.nGVzrhLXQVSxSRwxLF40FZtcSU89ZR-gxsMKsAcbDYA\",\n    \"refreshToken\": \"474f76b2b5dc0d0c57b204fa171911829f63c77f3bf07fcbb2494425bc94b8e6\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Generate new access token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"474f76b2b5dc0d0c57b204fa171911829f63c77f3bf07fcbb2494425bc94b8e6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/staff/refresh-token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								"refresh-token"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Generate new access token",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refreshToken\": \"474f76b2b5dc0d0c57b204fa171911829f63c77f3bf07fcbb2494425bc94b8e6\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/staff/refresh-token",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"staff",
+										"refresh-token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "244"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f4-YwbegZUMhUXqVakBr6DWz677kHY\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:56:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3MzY1ODEsImV4cCI6MTc0OTc0MDE4MX0.WiKqRfPeCMge6x6DI_dkplOFZ1sMrK15nt9kBMFdLQs\",\n    \"refreshToken\": \"720fb23ec2cef0e267de9210fc25dc2a26bb59388a312d4b1fab90196b8adc64\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get staff member details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3MzY1ODEsImV4cCI6MTc0OTc0MDE4MX0.WiKqRfPeCMge6x6DI_dkplOFZ1sMrK15nt9kBMFdLQs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/staff/details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								"details"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get staff member details",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/staff/details",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"staff",
+										"details"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "101"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"65-gN4ff2toLpdvk/XKxyAI+PVRctA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 13:59:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"email\": \"manav@gmail.com\",\n    \"name\": \"Manav\",\n    \"avatar\": null,\n    \"role\": \"super_admin\",\n    \"avatarUrl\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Update logged in staff member details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3MzY1ODEsImV4cCI6MTc0OTc0MDE4MX0.WiKqRfPeCMge6x6DI_dkplOFZ1sMrK15nt9kBMFdLQs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/staff/details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Staff member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3MzY1ODEsImV4cCI6MTc0OTc0MDE4MX0.WiKqRfPeCMge6x6DI_dkplOFZ1sMrK15nt9kBMFdLQs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Viraj Singh\",\r\n    \"email\": \"vrsingh@gmail.com\",\r\n    \"password\": \"test\",\r\n    \"role\": \"staff\" //[admin, staff]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/staff/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								""
+							]
+						},
+						"description": "Add a staff member. Note only admins and super-admins are allowed to add members"
+					},
+					"response": [
+						{
+							"name": "Add Staff member",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Viraj Singh\",\r\n    \"email\": \"vrsingh@gmail.com\",\r\n    \"password\": \"test\",\r\n    \"role\": \"staff\" //[admin, staff]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/staff/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"staff",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "126"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"7e-ZIA6WMy321TNgzAuWg7CgxDI2S4\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 14:50:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Staff member added successfully\",\n    \"staff\": {\n        \"id\": 9,\n        \"name\": \"Viraj Singh\",\n        \"email\": \"vrsingh@gmail.com\",\n        \"role\": \"staff\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get all staff members details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3MzY1ODEsImV4cCI6MTc0OTc0MDE4MX0.WiKqRfPeCMge6x6DI_dkplOFZ1sMrK15nt9kBMFdLQs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/staff/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								""
+							]
+						},
+						"description": "Get details of all staff members. Note can be used by only admins and super-admins"
+					},
+					"response": [
+						{
+							"name": "Get all staff members details",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/staff/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"staff",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "575"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"23f-8hT2fTdjfL/maEqaYS50MGeshvA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 14:51:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"staff\": [\n        {\n            \"id\": 3,\n            \"name\": \"Rajesh Kumar\",\n            \"email\": \"mohitrathi82082@gmail.com\",\n            \"avatar\": \"/uploads/staff/avatar/3.JPG\",\n            \"role\": \"staff\"\n        },\n        {\n            \"id\": 5,\n            \"name\": \"suresh\",\n            \"email\": \"sakshigrathi@gmail.com\",\n            \"avatar\": null,\n            \"role\": \"admin\"\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Mohit\",\n            \"email\": \"mohitrathi9423@gmail.com\",\n            \"avatar\": null,\n            \"role\": \"admin\"\n        },\n        {\n            \"id\": 7,\n            \"name\": \"Manav\",\n            \"email\": \"manav@gmail.com\",\n            \"avatar\": null,\n            \"role\": \"super_admin\"\n        },\n        {\n            \"id\": 8,\n            \"name\": \"Gopi Agarwal\",\n            \"email\": \"ariessportswera@gmail.com\",\n            \"avatar\": null,\n            \"role\": \"admin\"\n        },\n        {\n            \"id\": 9,\n            \"name\": \"Viraj Singh\",\n            \"email\": \"vrsingh@gmail.com\",\n            \"avatar\": null,\n            \"role\": \"staff\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get details of a specific member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3NDAzNjUsImV4cCI6MTc0OTc0Mzk2NX0.3sLOMal8Aw-RvN3cCC6gCqM_Y4auGvr-5HZoxDfz7b4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3",
+									"description": "Staff member id of whom you want to get details of."
+								}
+							]
+						},
+						"description": "get details of a particular staff member. Note can be only used by admins and a super-admins"
+					},
+					"response": [
+						{
+							"name": "Get details of a specific member",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/staff/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"staff",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "3",
+											"description": "Staff member id of whom you want to get details of."
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "120"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"78-6QXPNoT/kIKgRLYG9NidZ+QmFZ0\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 14:59:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"email\": \"mohitrathi82082@gmail.com\",\n    \"name\": \"Rajesh Kumar\",\n    \"avatar\": \"/uploads/staff/avatar/3.JPG\",\n    \"role\": \"staff\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update details of a specific member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3NDAzNjUsImV4cCI6MTc0OTc0Mzk2NX0.3sLOMal8Aw-RvN3cCC6gCqM_Y4auGvr-5HZoxDfz7b4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Mohit Rathi",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3",
+									"description": "Staff member id of whom you want to update details."
+								}
+							]
+						},
+						"description": "Update name, email or avatar of any specify staff member. Note can be used by admin and super-admins only."
+					},
+					"response": [
+						{
+							"name": "Update details of a specific member",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Mohit Rathi",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "avatar",
+											"type": "file",
+											"src": [],
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/staff/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"staff",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "3",
+											"description": "Staff member id of whom you want to update details."
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "251"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fb-So+w0/CzlvKgBJAaLPpOnndKDsw\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 15:02:52 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Staff profile updated successfully\",\n    \"staff\": {\n        \"id\": 3,\n        \"email\": \"mohitrathi82082@gmail.com\",\n        \"name\": \"Mohit Rathi\",\n        \"avatar\": \"/uploads/staff/avatar/3.JPG\",\n        \"role\": \"staff\",\n        \"avatarUrl\": \"https://ariessportswear.b-cdn.net/uploads/staff/avatar/3.JPG\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Staff member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3NDAzNjUsImV4cCI6MTc0OTc0Mzk2NX0.3sLOMal8Aw-RvN3cCC6gCqM_Y4auGvr-5HZoxDfz7b4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5",
+									"description": "Staff member id of whom you want to update details."
+								}
+							]
+						},
+						"description": "Delete staff member and all related stuff. Can be used by admins or super-admins only."
+					},
+					"response": [
+						{
+							"name": "Delete Staff member",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/staff/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"staff",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "5",
+											"description": "Staff member id of whom you want to update details."
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "62"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3e-T9xRc/wQZe5Vwz8auTYsTpq6Ul4\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 15:05:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Staff member deleted successfully\"\n}"
+						}
+					]
+				}
+			],
+			"description": "all staff related apis are here"
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "Get all categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						},
+						"description": "Get all categories and sub-categories available"
+					},
+					"response": [
+						{
+							"name": "Get all categories",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "484"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e4-hSE1Jjqr4yLiRFfNM0mdYIH9qSY\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 15:13:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"categories\": [\n        {\n            \"id\": 1,\n            \"name\": \"T-shirt\",\n            \"subCategories\": [\n                {\n                    \"id\": 20,\n                    \"name\": \"denim\"\n                },\n                {\n                    \"id\": 21,\n                    \"name\": \"licra\"\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Shirt\",\n            \"subCategories\": [\n                {\n                    \"id\": 12,\n                    \"name\": \"Half\"\n                }\n            ]\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Pants\",\n            \"subCategories\": [\n                {\n                    \"id\": 1,\n                    \"name\": \"Joggers\"\n                },\n                {\n                    \"id\": 14,\n                    \"name\": \"denim\"\n                }\n            ]\n        },\n        {\n            \"id\": 4,\n            \"name\": \"grocery item\",\n            \"subCategories\": [\n                {\n                    \"id\": 17,\n                    \"name\": \"milk\"\n                }\n            ]\n        },\n        {\n            \"id\": 5,\n            \"name\": \"chapal\",\n            \"subCategories\": [\n                {\n                    \"id\": 16,\n                    \"name\": \"puma\"\n                }\n            ]\n        },\n        {\n            \"id\": 7,\n            \"name\": \" Electronic\",\n            \"subCategories\": [\n                {\n                    \"id\": 19,\n                    \"name\": \"Mobiles\"\n                }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products?limit=10&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "color",
+									"value": "#000000",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "L",
+									"disabled": true
+								},
+								{
+									"key": "priceMin",
+									"value": "400.50",
+									"disabled": true
+								},
+								{
+									"key": "priceMax",
+									"value": "4000.00",
+									"disabled": true
+								},
+								{
+									"key": "categoryId",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "subCategoryId",
+									"value": "24",
+									"disabled": true
+								},
+								{
+									"key": "is_base",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "available",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "This single endpoint handles fetching all variants OR filtered variants based on query parameters. e.g., /products?color=blue&limit=20"
+					},
+					"response": [
+						{
+							"name": "Get products",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products?limit=10&offset=0",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products"
+									],
+									"query": [
+										{
+											"key": "color",
+											"value": "#000000",
+											"disabled": true
+										},
+										{
+											"key": "size",
+											"value": "L",
+											"disabled": true
+										},
+										{
+											"key": "priceMin",
+											"value": "400.50",
+											"disabled": true
+										},
+										{
+											"key": "priceMax",
+											"value": "4000.00",
+											"disabled": true
+										},
+										{
+											"key": "categoryId",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "subCategoryId",
+											"value": "24",
+											"disabled": true
+										},
+										{
+											"key": "is_base",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "available",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "offset",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3355"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"d1b-9PrhrIc9eTeIso7lVpxLgpKS+Zw\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:56:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"variants\": [\n        {\n            \"id\": 16,\n            \"product_id\": 7,\n            \"is_base\": 0,\n            \"name\": \"FlexFit Olive Shorts XL\",\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\n            \"color\": \"#808000\",\n            \"size\": \"XL\",\n            \"price\": \"899.00\",\n            \"stock\": 10,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-13T05:44:43.000Z\",\n            \"updated_at\": \"2025-06-13T05:44:43.000Z\",\n            \"productName\": \"FlexFit Shorts\",\n            \"productId\": 7,\n            \"images\": [],\n            \"tags\": []\n        },\n        {\n            \"id\": 15,\n            \"product_id\": 7,\n            \"is_base\": 0,\n            \"name\": \"FlexFit Grey Shorts M\",\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\n            \"color\": \"#757575\",\n            \"size\": \"M\",\n            \"price\": \"899.00\",\n            \"stock\": 15,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-13T05:44:43.000Z\",\n            \"updated_at\": \"2025-06-13T05:44:43.000Z\",\n            \"productName\": \"FlexFit Shorts\",\n            \"productId\": 7,\n            \"images\": [],\n            \"tags\": []\n        },\n        {\n            \"id\": 14,\n            \"product_id\": 7,\n            \"is_base\": 0,\n            \"name\": \"FlexFit Black Shorts L\",\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\n            \"color\": \"#212121\",\n            \"size\": \"L\",\n            \"price\": \"899.00\",\n            \"stock\": 20,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-13T05:44:43.000Z\",\n            \"updated_at\": \"2025-06-13T05:44:43.000Z\",\n            \"productName\": \"FlexFit Shorts\",\n            \"productId\": 7,\n            \"images\": [],\n            \"tags\": [\n                \"Featured\"\n            ]\n        },\n        {\n            \"id\": 13,\n            \"product_id\": 7,\n            \"is_base\": 1,\n            \"name\": \"FlexFit Black Shorts M\",\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\n            \"color\": \"#212121\",\n            \"size\": \"M\",\n            \"price\": \"899.00\",\n            \"stock\": 25,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-13T05:44:43.000Z\",\n            \"updated_at\": \"2025-06-13T05:44:43.000Z\",\n            \"productName\": \"FlexFit Shorts\",\n            \"productId\": 7,\n            \"images\": [],\n            \"tags\": [\n                \"Featured\"\n            ]\n        },\n        {\n            \"id\": 12,\n            \"product_id\": 4,\n            \"is_base\": 0,\n            \"name\": \"Urban Grey Hoodie XL\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#9e9e9e\",\n            \"size\": \"XL\",\n            \"price\": \"1499.00\",\n            \"stock\": 20,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"productName\": \"Urban Edge Hoodie\",\n            \"productId\": 4,\n            \"images\": [\n                {\n                    \"id\": 9,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/12-1749725268227\"\n                }\n            ],\n            \"tags\": []\n        },\n        {\n            \"id\": 11,\n            \"product_id\": 4,\n            \"is_base\": 0,\n            \"name\": \"Urban Navy Hoodie M\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#1a237e\",\n            \"size\": \"M\",\n            \"price\": \"1499.00\",\n            \"stock\": 30,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"productName\": \"Urban Edge Hoodie\",\n            \"productId\": 4,\n            \"images\": [\n                {\n                    \"id\": 8,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/11-1749725255042\"\n                }\n            ],\n            \"tags\": [\n                \"Featured\"\n            ]\n        },\n        {\n            \"id\": 10,\n            \"product_id\": 4,\n            \"is_base\": 0,\n            \"name\": \"Urban Black Hoodie L\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#000000\",\n            \"size\": \"L\",\n            \"price\": \"1499.00\",\n            \"stock\": 35,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"productName\": \"Urban Edge Hoodie\",\n            \"productId\": 4,\n            \"images\": [\n                {\n                    \"id\": 5,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174168\"\n                },\n                {\n                    \"id\": 6,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174450\"\n                },\n                {\n                    \"id\": 7,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174537\"\n                }\n            ],\n            \"tags\": [\n                \"Best Seller\"\n            ]\n        },\n        {\n            \"id\": 9,\n            \"product_id\": 4,\n            \"is_base\": 1,\n            \"name\": \"Urban Black Hoodie M\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#000000\",\n            \"size\": \"M\",\n            \"price\": \"1499.00\",\n            \"stock\": 40,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"productName\": \"Urban Edge Hoodie\",\n            \"productId\": 4,\n            \"images\": [],\n            \"tags\": [\n                \"Best Seller\",\n                \"Featured\"\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Products by tagId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/by-tag?tagId=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"by-tag"
+							],
+							"query": [
+								{
+									"key": "tagId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Get product varients of any specific tagId availabel"
+					},
+					"response": [
+						{
+							"name": "Get Products by tagId",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/by-tag?tagId=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"by-tag"
+									],
+									"query": [
+										{
+											"key": "tagId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1042"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"412-b91rXi2GAx8VAs2Nb5SDpwG//wI\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:56:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Variants fetched successfully by tag.\",\n    \"variants\": [\n        {\n            \"id\": 10,\n            \"product_id\": 4,\n            \"is_base\": 0,\n            \"name\": \"Urban Black Hoodie L\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#000000\",\n            \"size\": \"L\",\n            \"price\": \"1499.00\",\n            \"stock\": 35,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"productName\": \"Urban Edge Hoodie\",\n            \"productId\": 4,\n            \"images\": [\n                {\n                    \"id\": 5,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174168\"\n                },\n                {\n                    \"id\": 6,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174450\"\n                },\n                {\n                    \"id\": 7,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174537\"\n                }\n            ],\n            \"tags\": [\n                \"Best Seller\"\n            ]\n        },\n        {\n            \"id\": 9,\n            \"product_id\": 4,\n            \"is_base\": 1,\n            \"name\": \"Urban Black Hoodie M\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#000000\",\n            \"size\": \"M\",\n            \"price\": \"1499.00\",\n            \"stock\": 40,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"productName\": \"Urban Edge Hoodie\",\n            \"productId\": 4,\n            \"images\": [],\n            \"tags\": [\n                \"Best Seller\",\n                \"Featured\"\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get details of a specific product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/product/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4",
+									"description": "Product id to get details of."
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get details of a specific product",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/product/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "4",
+											"description": "Product id to get details of."
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1821"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"71d-78taYBeCjwrkIItNxy3c2VVSzDs\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:57:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"product\": {\n        \"id\": 4,\n        \"sub_category_id\": 12,\n        \"name\": \"Urban Edge Hoodie\",\n        \"created_at\": \"2025-06-12T10:31:55.000Z\",\n        \"updated_at\": \"2025-06-12T10:31:55.000Z\"\n    },\n    \"variants\": [\n        {\n            \"id\": 9,\n            \"product_id\": 4,\n            \"is_base\": 1,\n            \"name\": \"Urban Black Hoodie M\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#000000\",\n            \"size\": \"M\",\n            \"price\": \"1499.00\",\n            \"stock\": 40,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"images\": [],\n            \"tags\": [\n                \"Best Seller\",\n                \"Featured\"\n            ]\n        },\n        {\n            \"id\": 10,\n            \"product_id\": 4,\n            \"is_base\": 0,\n            \"name\": \"Urban Black Hoodie L\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#000000\",\n            \"size\": \"L\",\n            \"price\": \"1499.00\",\n            \"stock\": 35,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"images\": [\n                {\n                    \"id\": 5,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174168\"\n                },\n                {\n                    \"id\": 6,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174450\"\n                },\n                {\n                    \"id\": 7,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/10-1749725174537\"\n                }\n            ],\n            \"tags\": [\n                \"Best Seller\"\n            ]\n        },\n        {\n            \"id\": 11,\n            \"product_id\": 4,\n            \"is_base\": 0,\n            \"name\": \"Urban Navy Hoodie M\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#1a237e\",\n            \"size\": \"M\",\n            \"price\": \"1499.00\",\n            \"stock\": 30,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"images\": [\n                {\n                    \"id\": 8,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/11-1749725255042\"\n                }\n            ],\n            \"tags\": [\n                \"Featured\"\n            ]\n        },\n        {\n            \"id\": 12,\n            \"product_id\": 4,\n            \"is_base\": 0,\n            \"name\": \"Urban Grey Hoodie XL\",\n            \"description\": \"Stylish and warm hoodie perfect for winter.\",\n            \"color\": \"#9e9e9e\",\n            \"size\": \"XL\",\n            \"price\": \"1499.00\",\n            \"stock\": 20,\n            \"external_link\": null,\n            \"created_at\": \"2025-06-12T10:31:55.000Z\",\n            \"updated_at\": \"2025-06-12T10:31:55.000Z\",\n            \"images\": [\n                {\n                    \"id\": 9,\n                    \"url\": \"https://ariessportswear.b-cdn.net/products/12-1749725268227\"\n                }\n            ],\n            \"tags\": []\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Add category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3NDAzNjUsImV4cCI6MTc0OTc0Mzk2NX0.3sLOMal8Aw-RvN3cCC6gCqM_Y4auGvr-5HZoxDfz7b4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Chappal\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/category",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Add category",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Chappal\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/category",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"category"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "41"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"29-t7Mrc5IiLuPf5AXYrYjTk1RG9Xs\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 15:28:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Category added successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Category Name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3NDAzNjUsImV4cCI6MTc0OTc0Mzk2NX0.3sLOMal8Aw-RvN3cCC6gCqM_Y4auGvr-5HZoxDfz7b4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Cover\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/category/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"category",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update Category Name",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Cover\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/category/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"category",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-qHzEGuzfkbWWaCpwJ2RicWXJxGw\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 15:32:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Category updated successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete a category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3NDAzNjUsImV4cCI6MTc0OTc0Mzk2NX0.3sLOMal8Aw-RvN3cCC6gCqM_Y4auGvr-5HZoxDfz7b4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/category/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"category",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete a category",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/category/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"category",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-oSB9C9UJoaUkZ5Mu5gkTHkZwuV4\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 15:33:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Category deleted successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Add sub-category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryId\": 1,\r\n    \"name\": \"Rasine\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sub-category",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sub-category"
+							]
+						},
+						"description": "Add sub category to a existing category"
+					},
+					"response": [
+						{
+							"name": "Add sub-category",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"categoryId\": 1,\r\n    \"name\": \"Rasine\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sub-category",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sub-category"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "45"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2d-i/QJ+qJsmlyxCoEOonCBTRlYNMg\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:35:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Sub-category added successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update sub-category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mat\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sub-category/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sub-category",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Sub category id"
+								}
+							]
+						},
+						"description": "Update name of a existing sub-category"
+					},
+					"response": [
+						{
+							"name": "Update sub-category",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Mat\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sub-category/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sub-category",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1",
+											"description": "Sub category id"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "47"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2f-PZY5yHCYGKckhegajIjsubI2A+U\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:37:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Sub-category updated successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Sub Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sub-category/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sub-category",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Sub category id"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Sub Category",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/sub-category/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sub-category",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1",
+											"description": "Sub category id"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "47"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2f-q+NFZon1bk17PEzraotXlnV6AVA\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:40:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Sub-category deleted successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get all tags",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tags",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tags"
+							]
+						},
+						"description": "Get all available tags data. Can be only used by staff members"
+					},
+					"response": [
+						{
+							"name": "Get all tags",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tags",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tags"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "67"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"43-9DihzKvSpS90p+pNpQblrL3bxno\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:40:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"tags\": [\n        {\n            \"id\": 1,\n            \"name\": \"Best Seller\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Featured\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Add Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"FlexFit Performance Shorts\",\r\n    \"subCategoryId\": 14,\r\n    \"variants\": [\r\n        {\r\n            \"name\": \"FlexFit Black Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 25,\r\n            \"is_base\": true,\r\n            \"tags\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Black Shorts L\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"L\",\r\n            \"price\": 899,\r\n            \"stock\": 20,\r\n            \"is_base\": false,\r\n            \"tags\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Grey Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#757575\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 15,\r\n            \"is_base\": false\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Olive Shorts XL\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#808000\",\r\n            \"size\": \"XL\",\r\n            \"price\": 899,\r\n            \"stock\": 10,\r\n            \"is_base\": false\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/product",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product"
+							]
+						},
+						"description": "Create a new product. Note: This only handles product data, not images. Images are uploaded separately to a variant ID after the product is created."
+					},
+					"response": [
+						{
+							"name": "Add Product",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"FlexFit Performance Shorts\",\r\n    \"subCategoryId\": 14,\r\n    \"variants\": [\r\n        {\r\n            \"name\": \"FlexFit Black Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 25,\r\n            \"is_base\": true,\r\n            \"tags\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Black Shorts L\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"L\",\r\n            \"price\": 899,\r\n            \"stock\": 20,\r\n            \"is_base\": false,\r\n            \"tags\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Grey Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#757575\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 15,\r\n            \"is_base\": false\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Olive Shorts XL\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#808000\",\r\n            \"size\": \"XL\",\r\n            \"price\": 899,\r\n            \"stock\": 10,\r\n            \"is_base\": false\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/product",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "67"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"43-VmEWyNQCTKT7OTsh5dU50C7+tOc\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:44:43 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Product and variants added successfully\",\n    \"productId\": 7\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Product name or subcategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"FlexFit Shorts\",\r\n    \"subCategoryId\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/product/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update Product name or subcategory",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"FlexFit Shorts\",\r\n    \"subCategoryId\": 12\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/product/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "7"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-JTrMyLDmjXglA/caOEB/8dH537A\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:47:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Product updated successfully.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Sync tags",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tagIds\": [1]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/variant/:variantId/tags",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"variant",
+								":variantId",
+								"tags"
+							],
+							"variable": [
+								{
+									"key": "variantId",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Sync tags for a specific variant. This will add/remove tags to match the provided list."
+					},
+					"response": [
+						{
+							"name": "Sync tags",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"tagIds\": [1]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/variant/:variantId/tags",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"variant",
+										":variantId",
+										"tags"
+									],
+									"variable": [
+										{
+											"key": "variantId",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "53"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"35-3KIu336FL5Yp09Gb+V46Cz+pdjA\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 05:49:44 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Product tags synchronized successfully.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Variant Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"FlexFit Olive Shorts XL\",\r\n  \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n  \"color\": \"#808000\",\r\n  \"size\": \"XL\",\r\n  \"price\": 899,\r\n  \"stock\": 10,\r\n  \"external_link\": null,\r\n  \"is_base\": false\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/product/variant/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"variant",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "12"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update Variant Details",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"FlexFit Olive Shorts XL\",\r\n  \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n  \"color\": \"#808000\",\r\n  \"size\": \"XL\",\r\n  \"price\": 899,\r\n  \"stock\": 10,\r\n  \"external_link\": null,\r\n  \"is_base\": false\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/product/variant/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product",
+										"variant",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "12"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "42"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2a-fUYegmQLCd//0bOqEI6q/ZOTnL8\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 06:04:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Variant updated successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Upload Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/C:/Users/hp/Downloads/temp/download.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/product/variants/:variantId/images",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"variants",
+								":variantId",
+								"images"
+							],
+							"variable": [
+								{
+									"key": "variantId",
+									"value": "12"
+								}
+							]
+						},
+						"description": " Upload one or more images (max 5) for a specific variant"
+					},
+					"response": [
+						{
+							"name": "Upload Image",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "images",
+											"type": "file",
+											"src": "/C:/Users/hp/Downloads/temp/download.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/product/variants/:variantId/images",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product",
+										"variants",
+										":variantId",
+										"images"
+									],
+									"variable": [
+										{
+											"key": "variantId",
+											"value": "12"
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "107"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6b-x/A5LfgpuqoU+GQat+2nSdDYils\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 06:01:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Images uploaded and linked to variant successfully.\",\n    \"uploaded\": [\n        \"/products/12-1749794500843\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Specific Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/variants/images/:imageId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"variants",
+								"images",
+								":imageId"
+							],
+							"variable": [
+								{
+									"key": "imageId",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Specific Image",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/variants/images/:imageId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"variants",
+										"images",
+										":imageId"
+									],
+									"variable": [
+										{
+											"key": "imageId",
+											"value": "9"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "41"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"29-goiCLlrrR9F7CvXvmOrwy9IMu2E\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 06:00:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Image deleted successfully.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Variant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/product/variant/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"variant",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "12"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Variant",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/product/variant/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product",
+										"variant",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "12"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-4w6vVUG36W9SHc2qxKhpQRBj3rU\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 06:05:10 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Variant deleted successfully.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/product/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Product",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/product/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "7"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "67"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"43-px2sQyn+YtRAbcnNp6J4PDvwhk8\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 13 Jun 2025 06:05:51 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Product and all associated data deleted successfully.\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -1,44 +1,80 @@
 const express = require('express');
+const multer = require('multer');
 const authenticateToken = require('../middleware/authMiddleware');
 const categoryController = require('../controllers/products/categoryController');
 const productController = require('../controllers/products/productController');
 const recommendationController = require('../controllers/products/recommendationController');
 const tagController = require('../controllers/products/tagController');
-const multer = require('multer');
 
 const router = express.Router();
 
-// Setup multe
-const upload = multer({ storage: multer.memoryStorage() });
+// Setup multer for memory storage, allowing controllers to handle the buffer.
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit per file
+});
 
-// Public Routes
-// Category
+
+// ====================================================================
+// PUBLIC ROUTES (No Authentication Required)
+// ====================================================================
+
+// --- Categories & Sub-Categories ---
 router.get('/categories', categoryController.getCategories);
-// Products
-router.get('/products', productController.getAllVariants);
-router.get('/products/filter', productController.getFilteredVariants);
-router.get('/product/:id', productController.getProductById);
-router.get('/products/featured', recommendationController.getVariantsByTags);
 
-// Protected Routes
-// Category
+// --- Products & Variants ---
+// This single endpoint handles fetching all variants OR filtered variants
+// based on query parameters. e.g., /products?color=blue&limit=20
+router.get('/products', productController.getFilteredVariants);
+
+router.get('/products/by-tag', recommendationController.getVariantsByTag);
+router.get('/product/:id', productController.getProductById);
+
+
+// ====================================================================
+// PROTECTED ROUTES (Staff Authentication Required)
+// ====================================================================
+
+// --- Categories ---
 router.post('/category', authenticateToken, categoryController.addCategory);
-router.put('/category', authenticateToken, categoryController.updateCategory);
+router.put('/category/:id', authenticateToken, categoryController.updateCategory);
 router.delete('/category/:id', authenticateToken, categoryController.deleteCategory);
-// Sub Category
+
+// --- Sub-Categories ---
 router.post('/sub-category', authenticateToken, categoryController.addSubCategory);
-router.put('/sub-category', authenticateToken, categoryController.updateSubCategory);
+router.put('/sub-category/:id', authenticateToken, categoryController.updateSubCategory);
 router.delete('/sub-category/:id', authenticateToken, categoryController.deleteSubCategory);
-// Products
-router.post('/product', authenticateToken, upload.any(), productController.addProduct);
-router.put('/product/:id', authenticateToken, productController.updateProduct);
-router.put('/product/variant/:id', authenticateToken, productController.updateVariant);
-router.delete('/product/:id', authenticateToken, productController.deleteProduct);
-router.delete('/product/variant/:id', authenticateToken, productController.deleteVariant);
-router.post('/product/tag', authenticateToken, productController.addTagToProduct);
-//Tags
-router.post('/tags', authenticateToken, tagController.addTag);
+
+// --- Tags ---
 router.get('/tags', authenticateToken, tagController.getAllTags);
+router.post('/tag', authenticateToken, tagController.addTag);
+
+// --- Products ---
+// Create a new product. Note: This only handles product data, not images.
+// Images are uploaded separately to a variant ID after the product is created.
+router.post('/product', authenticateToken, upload.none(), productController.addProduct);
+
+router.put('/product/:id', authenticateToken, productController.updateProduct);
+router.delete('/product/:id', authenticateToken, productController.deleteProduct);
+
+// Sync tags for a specific variant. This will add/remove tags to match the provided list.
+router.put('/products/variant/:variantId/tags', authenticateToken, productController.syncVariantTags);
+
+
+// --- Variants & Variant Images ---
+router.put('/product/variant/:id', authenticateToken, productController.updateVariant);
+router.delete('/product/variant/:id', authenticateToken, productController.deleteVariant);
+
+// Upload one or more images (max 5) for a specific variant
+router.post(
+    '/product/variants/:variantId/images',
+    authenticateToken,
+    upload.array('images', 5), // 'images' is the field name in the form-data
+    productController.uploadVariantImages
+);
+
+// Delete a single, specific image from a variant
+router.delete('/variants/images/:imageId', authenticateToken, productController.deleteVariantImage);
 
 
 module.exports = router;

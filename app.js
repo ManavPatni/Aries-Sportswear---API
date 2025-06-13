@@ -1,5 +1,4 @@
 require('dotenv').config();
-require('./cron/cronJobs');
 const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
@@ -21,6 +20,9 @@ const allowedOrigins = [
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
+
+//Cron-job
+require('./cron/cronJobs');
 
 //Configure CORS
 app.use(cors({

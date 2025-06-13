@@ -1,0 +1,825 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "User"
+  },
+  "servers": [
+    {
+      "url": "https://api.ariessportswear.com"
+    }
+  ],
+  "tags": [],
+  "paths": {
+    "/user/login": {
+      "post": {
+        "description": "",
+        "operationId": "post_userlogin",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "accessToken": "someaccesstoken..",
+                      "refreshToken": "somerefreshtoken.."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": "{}",
+                    "summary": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "message": "Invaild or expired token"
+                    },
+                    "summary": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "",
+                    "x-readme-id": "0.0"
+                  },
+                  "password": {
+                    "type": "string",
+                    "x-readme-id": "0.1"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/refresh-token": {
+      "post": {
+        "description": "",
+        "operationId": "post_userrefresh-token",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "New Example": {
+                    "summary": "New Example",
+                    "value": {
+                      "accessToken": "someaccesstoken..",
+                      "refreshToken": "somerefreshtoken.."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Unathorized": {
+                    "value": {
+                      "message": "Invaild or expired token"
+                    },
+                    "summary": "Unathorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "x-readme-id": "0.0"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "refreshToken"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/details": {
+      "put": {
+        "description": "",
+        "operationId": "put_userdetails",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "message": "User profile updated successfully",
+                      "user": {
+                        "id": 1,
+                        "email": "johndeo@gmail.com",
+                        "name": "John Doe",
+                        "avatar": "/uploads/user/avatar/1.jpeg",
+                        "address": "Gat no. 707 VSV Textile dawat nagar kabnoor, Chandur-Kabnoor Road Kabnoor, Ichalkaranji - 416138, Maharastra",
+                        "avatarUrl": "https://bucketname.b-cdn.net/uploads/user/avatar/1.jpeg"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Unathorized": {
+                    "value": {
+                      "message": "Invaild or expired token"
+                    },
+                    "summary": "Unathorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Not Found": {
+                    "value": "{\n\tmessage: 'User not found'\n}",
+                    "summary": "Not Found"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "default": "John Doe",
+                    "description": "user full name",
+                    "x-readme-id": "0.0"
+                  },
+                  "address": {
+                    "type": "string",
+                    "default": "1600 Amphitheatre Parkway",
+                    "description": "complete address",
+                    "x-readme-id": "0.1"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "avatar",
+                    "x-readme-id": "0.2"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "description": "",
+        "operationId": "get_userdetails",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "id": 1,
+                      "email": "johndeo@gmail.com",
+                      "name": "John Deo",
+                      "avatar": "/uploads/user/avatar/1.jpeg",
+                      "address": "Gat no. 707 VSV Textile dawat nagar kabnoor, Chandur-Kabnoor Road Kabnoor, Ichalkaranji - 416138, Maharastra",
+                      "avatarUrl": "https://bucketname.b-cdn.net/uploads/user/avatar/1.jpeg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Unathorized": {
+                    "value": {
+                      "message": "Invaild or expired token"
+                    },
+                    "summary": "Unathorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Not Found": {
+                    "value": "{\n  \"message\": 'User not found'\n}",
+                    "summary": "Not Found"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/staff/login": {
+      "post": {
+        "description": "",
+        "operationId": "post_stafflogin",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "x-readme-id": "0.0"
+                  },
+                  "password": {
+                    "type": "string",
+                    "x-readme-id": "0.1"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "delete": {
+        "description": "",
+        "operationId": "delete_user",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "success": true,
+                      "message": "User deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/staff/refresh-token": {
+      "post": {
+        "description": "",
+        "operationId": "post_staffrefresh-token",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "accessToken": "someaccesstoken..",
+                      "refreshToken": "somerefreshtoken.."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Unathorized": {
+                    "value": {
+                      "message": "Invaild or expired token"
+                    },
+                    "summary": "Unathorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "x-readme-id": "0.0"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "refreshToken"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/staff/details": {
+      "put": {
+        "description": "",
+        "operationId": "put_staffdetails",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "message": "Staff profile updated successfully",
+                      "staff": {
+                        "id": 1,
+                        "email": "johndeo@gmail.com",
+                        "name": "John Doe",
+                        "avatar": "/uploads/user/avatar/1.jpeg",
+                        "address": "Gat no. 707 VSV Textile dawat nagar kabnoor, Chandur-Kabnoor Road Kabnoor, Ichalkaranji - 416138, Maharastra",
+                        "avatarUrl": "https://bucketname.b-cdn.net/uploads/user/avatar/1.jpeg"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "x-readme-id": "0.0"
+                  },
+                  "address": {
+                    "type": "string",
+                    "x-readme-id": "0.1"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "x-readme-id": "0.2"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dtaff/details": {
+      "get": {
+        "description": "",
+        "operationId": "get_dtaffdetails",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "New Example": {
+                    "summary": "New Example",
+                    "value": {
+                      "id": 1,
+                      "email": "johndeo@gmail.com",
+                      "name": "John Deo",
+                      "avatar": "/uploads/user/avatar/1.jpeg",
+                      "address": "Gat no. 707 VSV Textile dawat nagar kabnoor, Chandur-Kabnoor Road Kabnoor, Ichalkaranji - 416138, Maharastra",
+                      "avatarUrl": "https://bucketname.b-cdn.net/uploads/user/avatar/1.jpeg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user/send-otp": {
+      "post": {
+        "summary": "New Endpoint",
+        "description": "This is your first endpoint! Edit this page to start documenting your API.",
+        "operationId": "get_new-endpoint",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "message": "OTP sent to your email."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Bad Request": {
+                    "value": {
+                      "message": "User already exists"
+                    },
+                    "summary": "Bad Request"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Too Many Requests": {
+                    "value": "{\n\t\"message\": 'Too many requests. Please try again later.'\n}",
+                    "summary": "Too Many Requests"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "default": "test@gmail.com",
+                    "description": "",
+                    "x-readme-id": "0.0"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "description": "",
+        "operationId": "post_userverify-otp",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "New Example": {
+                    "summary": "New Example",
+                    "value": {
+                      "message": "User registered successfully.",
+                      "accessToken": "someaccesstoken..",
+                      "refreshToken": "somerefreshtoken..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Bad Request": {
+                    "value": "{\n\t\"message\": 'Refresh token required'\n}",
+                    "summary": "Bad Request"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": "{\n\t\"message\": 'Invalid or expired refresh token'\n}",
+                    "summary": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "x-readme-id": "0.0"
+                  },
+                  "password": {
+                    "type": "string",
+                    "x-readme-id": "0.1"
+                  },
+                  "otp": {
+                    "type": "string",
+                    "x-readme-id": "0.2"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "email",
+                  "password",
+                  "otp"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/staff/send-otp": {
+      "post": {
+        "description": "",
+        "operationId": "post_new-endpoint",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "message": "OTP sent to your email."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Bad Request": {
+                    "value": {
+                      "message": "Staff already exists"
+                    },
+                    "summary": "Bad Request"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Too Many Requests": {
+                    "value": "{\n\t\"message\": 'Too many requests. Please try again later.'\n}",
+                    "summary": "Too Many Requests"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/staff/register": {
+      "post": {
+        "description": "",
+        "operationId": "post_staffverify-otp",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Successful": {
+                    "summary": "Successful",
+                    "value": {
+                      "message": "Staff registered successfully.",
+                      "accessToken": "someaccesstoken..",
+                      "refreshToken": "somerefreshtoken..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Bad Request": {
+                    "value": "{\n\t\"message\": 'Refresh token required'\n}",
+                    "summary": "Bad Request"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": "{\n\t\"message\": 'Invalid or expired refresh token'\n}",
+                    "summary": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "x-readme-id": "0.0"
+                  },
+                  "password": {
+                    "type": "string",
+                    "x-readme-id": "0.1"
+                  },
+                  "otp": {
+                    "type": "string",
+                    "x-readme-id": "0.2"
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "admin, staff",
+                    "x-readme-id": "0.3"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "email",
+                  "password",
+                  "otp",
+                  "role",
+                  "name"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
