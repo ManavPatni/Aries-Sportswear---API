@@ -196,6 +196,18 @@ CREATE TABLE `product_tag` (
     PRIMARY KEY (`product_id`, `tag_id`),
     INDEX `idx_product_tag_tag_id` (`tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+SQL,
+
+    'review' => <<<SQL
+CREATE TABLE 'review' (
+    'id' INT AUTO_INCREMENT PRIMARY KEY,
+    'user_id' BIGINT(20) NOT NULL,
+    'product_id' INT NOT NULL,
+    'rating' FLOAT NOT NULL CHECK ('rating' >= 1 AND 'rating' <= 5),
+    'comment' TEXT NOT NULL,
+    'created_at' TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    'updated_at' TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 SQL
 ];
 
@@ -260,6 +272,24 @@ $constraints = [
         'table' => 'product_tag',
         'name' => 'fk_product_tag_tag_id',
         'sql' => 'ALTER TABLE `product_tag` ADD CONSTRAINT `fk_product_tag_tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;'
+    ],
+    [
+        'type' => 'foreign_key',
+        'table' => 'review',
+        'name' => 'fk_review_user_id',
+        'sql' => 'ALTER TABLE `review` ADD CONSTRAINT `fk_review_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;'
+    ],
+    [
+        'type' => 'foreign_key',
+        'table' => 'review',
+        'name' => 'fk_review_product_id',
+        'sql' => 'ALTER TABLE `review` ADD CONSTRAINT `fk_review_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;'
+    ],
+    [
+    'type' => 'unique_key',
+    'table' => 'review',
+    'name' => 'unique_user_product_review',
+    'sql' => "ALTER TABLE `review` ADD CONSTRAINT `unique_user_product_review` UNIQUE (`user_id`, `product_id`);"
     ]
 ];
 

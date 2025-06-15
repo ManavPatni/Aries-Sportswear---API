@@ -5,6 +5,7 @@ const categoryController = require('../controllers/products/categoryController')
 const productController = require('../controllers/products/productController');
 const recommendationController = require('../controllers/products/recommendationController');
 const tagController = require('../controllers/products/tagController');
+const reviewController = require('../controllers/products/reviewController');
 
 const router = express.Router();
 
@@ -19,6 +20,10 @@ const upload = multer({
 // PUBLIC ROUTES (No Authentication Required)
 // ====================================================================
 
+
+
+
+
 // --- Categories & Sub-Categories ---
 router.get('/categories', categoryController.getCategories);
 
@@ -26,10 +31,9 @@ router.get('/categories', categoryController.getCategories);
 // This single endpoint handles fetching all variants OR filtered variants
 // based on query parameters. e.g., /products?color=blue&limit=20
 router.get('/products', productController.getFilteredVariants);
-
 router.get('/products/by-tag', recommendationController.getVariantsByTag);
+router.get('/product/reviews', reviewController.getReviews);
 router.get('/product/:id', productController.getProductById);
-
 
 // ====================================================================
 // PROTECTED ROUTES (Staff Authentication Required)
@@ -76,5 +80,8 @@ router.post(
 // Delete a single, specific image from a variant
 router.delete('/variants/images/:imageId', authenticateToken, productController.deleteVariantImage);
 
+// --- Review ---
+// add review for a product
+router.post('/product/add-review/:productId', authenticateToken, reviewController.addReview);
 
 module.exports = router;
