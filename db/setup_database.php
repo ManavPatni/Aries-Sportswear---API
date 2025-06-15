@@ -199,14 +199,14 @@ CREATE TABLE `product_tag` (
 SQL,
 
     'review' => <<<SQL
-CREATE TABLE 'review' (
-    'id' INT AUTO_INCREMENT PRIMARY KEY,
-    'user_id' BIGINT(20) NOT NULL,
-    'product_id' INT NOT NULL,
-    'rating' FLOAT NOT NULL CHECK ('rating' >= 1 AND 'rating' <= 5),
-    'comment' TEXT NOT NULL,
-    'created_at' TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    'updated_at' TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE `review` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` BIGINT(20) NOT NULL,
+    `product_id` INT NOT NULL,
+    `rating` FLOAT NOT NULL CHECK (`rating` >= 1 AND `rating` <= 5),
+    `comment` TEXT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 SQL
 ];
