@@ -264,8 +264,8 @@ $constraints = [
     [
         'type' => 'foreign_key',
         'table' => 'product_tag',
-        'name' => 'fk_product_tag_product_id',
-        'sql' => 'ALTER TABLE `product_tag` ADD CONSTRAINT `fk_product_tag_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;'
+        'name' => 'fk_product_tag_variant_id',
+        'sql' => 'ALTER TABLE `product_tag` ADD CONSTRAINT `fk_product_tag_variant_id` FOREIGN KEY (`variant_id`) REFERENCES `variant` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;'
     ],
     [
         'type' => 'foreign_key',
