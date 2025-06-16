@@ -20,10 +20,6 @@ const upload = multer({
 // PUBLIC ROUTES (No Authentication Required)
 // ====================================================================
 
-
-
-
-
 // --- Categories & Sub-Categories ---
 router.get('/categories', categoryController.getCategories);
 
