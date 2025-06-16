@@ -3,18 +3,32 @@ const authenticateToken = require('../middleware/authMiddleware');
 const verifyOtp = require('../middleware/otpMiddleware');
 const authController = require('../controllers/user/authController');
 const profileController = require('../controllers/user/profileController');
+const cartController = require('../controllers/user/cartController');
 
 const router = express.Router();
 
-//Public routes
+// ====================================================================
+// PUBLIC ROUTES (No Authentication Required)
+// ====================================================================
+
+// --- Register & Login---
 router.post('/send-otp', authController.sendOtp);
 router.post('/register', verifyOtp, authController.register);
 router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 
-//Protected Routes
+// ====================================================================
+// PROTECTED ROUTES (User Authentication Required)
+// ====================================================================
+
+// --- Details and profile ---
 router.get('/details', authenticateToken, profileController.getDetails);
 router.put('/details', authenticateToken, profileController.updateDeatils);
 router.delete('/', authenticateToken, profileController.deleteUser);
+
+// --- Cart ---
+router.post('/cart/add-item', authenticateToken, cartController.addToCart);
+router.put('/cart/remove-item', authenticateToken, cartController.removeFromCart);
+router.get('/cart', authenticateToken, cartController.getUserCart);
 
 module.exports = router;

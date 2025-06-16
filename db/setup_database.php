@@ -208,7 +208,18 @@ CREATE TABLE `review` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-SQL
+SQL,
+
+    'cart_item' => <<< SQL
+CREATE TABLE 'cart_item' (
+    'id' INT AUTO_INCREMENT PRIMARY KEY,
+    'user_id' BIGINT(20) NOT NULL,
+    'variant_id' INT NOT NULL,
+    'quantity' INT NOT NULL CHECK ('quantity' > 0),
+    'created_at' TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    'updated_at' TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+SQL,
 ];
 
 // Constraint definitions
@@ -290,6 +301,24 @@ $constraints = [
     'table' => 'review',
     'name' => 'unique_user_product_review',
     'sql' => "ALTER TABLE `review` ADD CONSTRAINT `unique_user_product_review` UNIQUE (`user_id`, `product_id`);"
+    ],
+    [
+        'type' => 'foreign_key',
+        'table' => 'cart_item',
+        'name' => 'fk_cart_item_user_id',
+        'sql' => "ALTER TABLE 'cart_item' ADD CONSTRAINT 'fk_cart_item_user_id' FOREIGN KEY ('user_id') REFERENCES 'user'('id') ON DELETE CASCADE ON UPDATE CASCADE;"
+    ],
+    [
+        'type' => 'foreign_key',
+        'table' => 'cart_item',
+        'name' => 'fk_cart_item_variant_id',
+        'sql' => "ALTER TABLE 'cart_item' ADD CONSTRAINT 'fk_cart_item_variant_id' FOREIGN KEY ('variant_id') REFERENCES 'variant'('id') ON DELETE CASCADE ON UPDATE CASCADE;"
+    ],
+    [
+    'type' => 'unique_key',
+    'table' => 'cart_item',
+    'name' => 'unique_user_variant',
+    'sql' => "ALTER TABLE 'cart_item' UNIQUE KEY unique_user_variant (user_id, variant_id);"
     ]
 ];
 

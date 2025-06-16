@@ -214,7 +214,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"mnvpatni@gmail.com\",\r\n    \"password\": \"manav\"\r\n}",
+							"raw": "{\r\n    \"email\": \"devmnv108@gmail.com\",\r\n    \"password\": \"manav\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -627,6 +627,316 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"success\": true,\n    \"message\": \"User deleted successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Add to cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI3LCJpYXQiOjE3NTAwODIyMDAsImV4cCI6MTc1MDA4NTgwMH0.6T4y5WNPdyMmI56BVDpCefgC5pDFQejiX_mrFI-rWh8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"variantId\": 24,\r\n    \"quantity\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/cart/add-item",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"cart",
+								"add-item"
+							]
+						},
+						"description": "Add item to users cart"
+					},
+					"response": [
+						{
+							"name": "Add to cart",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"variantId\": 24,\r\n    \"quantity\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/cart/add-item",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"cart",
+										"add-item"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "42"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2a-3f798VgQb54JOJ94j2jJHIGrNT4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 16 Jun 2025 13:58:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Cart item added successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get cart items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI3LCJpYXQiOjE3NTAwODIyMDAsImV4cCI6MTc1MDA4NTgwMH0.6T4y5WNPdyMmI56BVDpCefgC5pDFQejiX_mrFI-rWh8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"cart"
+							]
+						},
+						"description": "Add all items add in users cart"
+					},
+					"response": [
+						{
+							"name": "Get cart items",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/cart",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"cart"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "340"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"154-z66oATaqIOPpLB0CHe4RL1lBrZM\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 16 Jun 2025 13:59:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Cart fetched successfully\",\n    \"cart\": [\n        {\n            \"cart_id\": 1,\n            \"quantity\": 5,\n            \"variant_id\": 24,\n            \"variant_name\": \"FlexFit Olive Shorts XL\",\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\n            \"color\": \"#808000\",\n            \"size\": \"XL\",\n            \"price\": \"899.00\",\n            \"stock\": 10,\n            \"product_id\": 9,\n            \"product_name\": \"FlexFit Performance Shorts\",\n            \"image_path\": null\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Remove from cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI3LCJpYXQiOjE3NTAwODIyMDAsImV4cCI6MTc1MDA4NTgwMH0.6T4y5WNPdyMmI56BVDpCefgC5pDFQejiX_mrFI-rWh8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"variantId\": 24,\r\n    \"quantity\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/cart/remove-item",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"cart",
+								"remove-item"
+							]
+						},
+						"description": "To remove an item or reduce its quantity from the cart:\r\n\r\n - To reduce the quantity, send the desired quantity to be removed in the API request.\r\n - To remove the item completely, send the full quantity currently in the cart."
+					},
+					"response": [
+						{
+							"name": "Remove from cart",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"variantId\": 24,\r\n    \"quantity\": 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/cart/remove-item",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"cart",
+										"remove-item"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "44"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2c-lwZSaMeb9Cwsxswaf8wdznRIoKI\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 16 Jun 2025 14:01:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Cart item removed successfully\"\n}"
 						}
 					]
 				}
@@ -2722,7 +3032,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk3OTI4MTMsImV4cCI6MTc0OTc5NjQxM30.V5Q15dzo_qs3hZxXpAGhoQSlFCB4A8pYEox63kSwzeg",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZklkIjo3LCJpYXQiOjE3NDk4MDQxMDcsImV4cCI6MTc0OTgwNzcwN30.qvFvDx3UnQv_u8_KyavH4KUI5Skmq6RSuTbdIoirzHw",
 									"type": "string"
 								}
 							]
@@ -2731,7 +3041,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"FlexFit Performance Shorts\",\r\n    \"subCategoryId\": 14,\r\n    \"variants\": [\r\n        {\r\n            \"name\": \"FlexFit Black Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 25,\r\n            \"is_base\": true,\r\n            \"tags\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Black Shorts L\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"L\",\r\n            \"price\": 899,\r\n            \"stock\": 20,\r\n            \"is_base\": false,\r\n            \"tags\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Grey Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#757575\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 15,\r\n            \"is_base\": false\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Olive Shorts XL\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#808000\",\r\n            \"size\": \"XL\",\r\n            \"price\": 899,\r\n            \"stock\": 10,\r\n            \"is_base\": false\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"FlexFit Performance Shorts\",\r\n    \"subCategoryId\": 14,\r\n    \"variants\": [\r\n        {\r\n            \"name\": \"FlexFit Black Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 25,\r\n            \"is_base\": true,\r\n            \"tagIds\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Black Shorts L\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"L\",\r\n            \"price\": 899,\r\n            \"stock\": 20,\r\n            \"is_base\": false,\r\n            \"tagIds\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Grey Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#757575\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 15,\r\n            \"is_base\": false\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Olive Shorts XL\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#808000\",\r\n            \"size\": \"XL\",\r\n            \"price\": 899,\r\n            \"stock\": 10,\r\n            \"is_base\": false\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2757,7 +3067,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"FlexFit Performance Shorts\",\r\n    \"subCategoryId\": 14,\r\n    \"variants\": [\r\n        {\r\n            \"name\": \"FlexFit Black Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 25,\r\n            \"is_base\": true,\r\n            \"tags\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Black Shorts L\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"L\",\r\n            \"price\": 899,\r\n            \"stock\": 20,\r\n            \"is_base\": false,\r\n            \"tags\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Grey Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#757575\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 15,\r\n            \"is_base\": false\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Olive Shorts XL\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#808000\",\r\n            \"size\": \"XL\",\r\n            \"price\": 899,\r\n            \"stock\": 10,\r\n            \"is_base\": false\r\n        }\r\n    ]\r\n}",
+									"raw": "{\r\n    \"name\": \"FlexFit Performance Shorts\",\r\n    \"subCategoryId\": 14,\r\n    \"variants\": [\r\n        {\r\n            \"name\": \"FlexFit Black Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 25,\r\n            \"is_base\": true,\r\n            \"tagIds\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Black Shorts L\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#212121\",\r\n            \"size\": \"L\",\r\n            \"price\": 899,\r\n            \"stock\": 20,\r\n            \"is_base\": false,\r\n            \"tagIds\": [\r\n                2\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Grey Shorts M\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#757575\",\r\n            \"size\": \"M\",\r\n            \"price\": 899,\r\n            \"stock\": 15,\r\n            \"is_base\": false\r\n        },\r\n        {\r\n            \"name\": \"FlexFit Olive Shorts XL\",\r\n            \"description\": \"Lightweight and stretchable shorts for intense workouts.\",\r\n            \"color\": \"#808000\",\r\n            \"size\": \"XL\",\r\n            \"price\": 899,\r\n            \"stock\": 10,\r\n            \"is_base\": false\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2779,44 +3089,52 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Access-Control-Allow-Credentials",
-									"value": "true"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "67"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"43-VmEWyNQCTKT7OTsh5dU50C7+tOc\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 13 Jun 2025 05:44:43 GMT"
-								},
-								{
 									"key": "Connection",
-									"value": "keep-alive"
+									"value": "Keep-Alive"
 								},
 								{
 									"key": "Keep-Alive",
-									"value": "timeout=5"
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "vary",
+									"value": "Origin,User-Agent"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"5f-Jg+nb81eiDuYsja+nOVbn26aTXk\""
+								},
+								{
+									"key": "content-length",
+									"value": "95"
+								},
+								{
+									"key": "date",
+									"value": "Fri, 13 Jun 2025 08:42:14 GMT"
+								},
+								{
+									"key": "server",
+									"value": "LiteSpeed"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000, h3-29=\":443\"; ma=2592000, h3-Q050=\":443\"; ma=2592000, h3-Q046=\":443\"; ma=2592000, h3-Q043=\":443\"; ma=2592000, quic=\":443\"; ma=2592000; v=\"43,46\""
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"message\": \"Product and variants added successfully\",\n    \"productId\": 7\n}"
+							"body": "{\n    \"message\": \"Product and variants added successfully\",\n    \"productId\": 27,\n    \"variantIds\": [\n        48,\n        49,\n        50,\n        51\n    ]\n}"
 						}
 					]
 				},
@@ -3614,6 +3932,219 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"message\": \"Product and all associated data deleted successfully.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Add Product Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI3LCJpYXQiOjE3NDk5NzA5MzEsImV4cCI6MTc0OTk3NDUzMX0.PAeIyZHtBa5OyqMDVLZbC0UBD4GmH9EwcFvra-0D-ao",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\": 4.5,\r\n    \"comment\": \"Nice\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/product/add-review/:productId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"add-review",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Add Product Review",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"rating\": 4.5,\r\n    \"comment\": \"Nice\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/product/add-review/:productId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product",
+										"add-review",
+										":productId"
+									],
+									"variable": [
+										{
+											"key": "productId",
+											"value": "9"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-uvfTDjAqZIg1ALeqw5KKeiGF3uM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 15 Jun 2025 07:02:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Review added successfully.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Product Review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/product/reviews?productId=9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "productId",
+									"value": "9"
+								}
+							]
+						},
+						"description": "Get specific product review"
+					},
+					"response": [
+						{
+							"name": "Get Product Review",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/product/reviews?productId=9",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"product",
+										"reviews"
+									],
+									"query": [
+										{
+											"key": "productId",
+											"value": "9"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "257"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"101-+cseBDkEv9XOyFiYbrV/4+c74n8\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 15 Jun 2025 07:23:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"reviews\": [\n        {\n            \"id\": 1,\n            \"user_id\": 27,\n            \"product_id\": 9,\n            \"rating\": 4.5,\n            \"comment\": \"Nice\",\n            \"created_at\": \"2025-06-15T07:02:30.000Z\",\n            \"updated_at\": \"2025-06-15T07:02:30.000Z\",\n            \"user_name\": \"Manav\",\n            \"user_avatar\": \"https://ariessportswear.b-cdn.net/uploads/user/avatar/24.jpg\"\n        }\n    ]\n}"
 						}
 					]
 				}
