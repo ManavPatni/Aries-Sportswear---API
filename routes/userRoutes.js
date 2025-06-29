@@ -31,4 +31,10 @@ router.post('/cart/add-item', authenticateToken, cartController.addToCart);
 router.put('/cart/remove-item', authenticateToken, cartController.removeFromCart);
 router.get('/cart', authenticateToken, cartController.getUserCart);
 
+// --- Shipping Address---
+router.post('/shipping-address', authenticateToken, profileController.addShippingAddress);
+router.get('/shipping-address', authenticateToken, profileController.getShippingAddress);
+router.put('/shipping-address', authenticateToken, profileController.updateShippingAddress);
+router.delete('/shipping-address', authenticateToken, profileController.deleteShippingAddress);
+
 module.exports = router;

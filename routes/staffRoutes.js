@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../db/database')
+const db = require('../db/database');
 const authenticateToken = require('../middleware/authMiddleware');
 const authController = require('../controllers/staff/authController');
 const profileController = require('../controllers/staff/profileController');
@@ -16,7 +16,7 @@ router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 
 // ====================================================================
-// PROTECTED ROUTES (User Authentication Required)
+// PROTECTED ROUTES (Staff Authentication Required)
 // ====================================================================
 
 // --- Logged-in staff details ---

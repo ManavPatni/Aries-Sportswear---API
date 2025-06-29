@@ -2,7 +2,8 @@ const db = require('../../db/database');
 const multer = require('multer');
 const path = require('path');
 const mediaController = require('../mediaController');
-const User = require('../../models/userModel');
+const User = require('../../models/user/userModel');
+const shippingAddressModel = require('../../models/user/shippingAddressModel');
 
 // Multer configuration with memory storage
 const upload = multer({
@@ -151,10 +152,80 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const addShippingAddress = async (req, res) => {
+  const userId = req.user.id;
+  const { address } = req.body;
+  if (!address) return res.status(400).json({message: 'Missing or invalid address object'});
+
+  try {
+    const address_id = await shippingAddressModel.addAddress(userId, address);
+    return res.json(201).json({ message: 'Address saved', address_id})
+  } catch (err) {
+    console.error( 'addShippingAddress error:', err );
+    return res.status(500).json({ message: 'Internal server error', error: err.message });
+  }
+
+};
+
+const getShippingAddress = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const getAll = req.query.all !== 'false';
+
+    const result = await addressModel.getUserAddress(userId, getAll);
+
+    res.status(200).json({
+      message: 'Address fetched successfully',
+      data: result,
+    });
+  } catch (error) {
+    console.error('getShippingAddress error:', error);
+    res.status(500).json({ message: 'Internal server error', error: err.message });
+  }
+};
+
+const updateShippingAddress = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { addressId, address } = req.body;
+    if (!address) return res.status(400).json({message: 'Missing or invalid address object'});
+ 
+    if (!addressId) {
+      return res.status(400).json({ error: 'Missing addressId' });
+    }
+
+    await addressModel.updateAddress(addressId, userId, req.body);
+    res.status(200).json({ message: 'Address updated successfully' });
+  } catch (err) {
+    console.error('updateShippingAddress:', err);
+    res.status(400).json({ error: err.message });
+  }
+};
+
+const deleteShippingAddress = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { addressId } = req.body;
+    if (!addressId) {
+      return res.status(400).json({ error: 'Missing addressId' });
+    }
+
+    await addressModel.removeAddress(addressId, userId);
+    res.status(200).json({ message: 'Address removed successfully' });
+  } catch (err) {
+    console.error('deleteShippingAddress:', err);
+    res.status(400).json({ error: err.message });
+  }
+};
+
 module.exports = {
   getDetails,
   updateDeatils,
-  deleteUser
+  deleteUser,
+  addShippingAddress,
+  getShippingAddress,
+  updateShippingAddress,
+  deleteShippingAddress
 };
 
 /*

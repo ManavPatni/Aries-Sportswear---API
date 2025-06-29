@@ -1,6 +1,6 @@
 const db = require('../../db/database');
-const categoryModel = require('../../models/categoryModel');
-const subCategoryModel = require('../../models/subCategoryModel');
+const categoryModel = require('../../models/product/categoryModel');
+const subCategoryModel = require('../../models/product/subCategoryModel');
 
 // Common Controller
 const getCategories = async (req, res) => {

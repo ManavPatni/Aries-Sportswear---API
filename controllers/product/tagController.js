@@ -1,4 +1,4 @@
-const tagModel = require('../../models/tagModel');
+const tagModel = require('../../models/product/tagModel');
 
 const getAllTags = async (req, res) => {
     if (!req.staff) return res.status(403).json({ message: 'Unauthorized' });
