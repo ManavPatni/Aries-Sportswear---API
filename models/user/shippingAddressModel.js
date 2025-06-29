@@ -55,13 +55,13 @@ exports.addAddress = async (userId, address) => {
     // If this is marked as default, clear previous default rows for the same user
     if (is_default) {
       await conn.query(
-        'UPDATE user_addresses SET is_default = 0 WHERE user_id = ?',
+        'UPDATE user_shipping_address SET is_default = 0 WHERE user_id = ?',
         [userId]
       );
     }
 
     const [result] = await conn.query(
-      `INSERT INTO user_addresses
+      `INSERT INTO user_shipping_address
        (user_id, label, recipient_name, phone, line1, line2, landmark, city,
         state, country, postal_code, digipin, is_default)
        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
@@ -108,11 +108,11 @@ exports.getUserAddress = async (userId, getAll = true) => {
   try {
     const sql = getAll
       ? `SELECT *
-         FROM user_addresses
+         FROM user_shipping_address
          WHERE user_id = ?
          ORDER BY is_default DESC, created_at DESC`
       : `SELECT *
-         FROM user_addresses
+         FROM user_shipping_address
          WHERE user_id = ? AND is_default = 1
          LIMIT 1`;
 
@@ -173,14 +173,14 @@ exports.updateAddress = async (addressId, userId, updates) => {
     // If setting this address as default → clear others first
     if (updates.is_default === 1) {
       await conn.query(
-        'UPDATE user_addresses SET is_default = 0 WHERE user_id = ?',
+        'UPDATE user_shipping_address SET is_default = 0 WHERE user_id = ?',
         [userId],
       );
     }
 
     values.push(addressId, userId); // params for WHERE clause
     await conn.query(
-      `UPDATE user_addresses
+      `UPDATE user_shipping_address
        SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP
        WHERE address_id = ? AND user_id = ?`,
       values,
@@ -213,20 +213,20 @@ exports.removeAddress = async (addressId, userId) => {
 
     // Was this the default?
     const [[row]] = await conn.query(
-      'SELECT is_default FROM user_addresses WHERE address_id = ? AND user_id = ?',
+      'SELECT is_default FROM user_shipping_address WHERE address_id = ? AND user_id = ?',
       [addressId, userId],
     );
     if (!row) throw new Error('Address not found or does not belong to user');
 
     await conn.query(
-      'DELETE FROM user_addresses WHERE address_id = ? AND user_id = ?',
+      'DELETE FROM user_shipping_address WHERE address_id = ? AND user_id = ?',
       [addressId, userId],
     );
 
     if (row.is_default === 1) {
       // Promote newest remaining address to default
       await conn.query(
-        `UPDATE user_addresses
+        `UPDATE user_shipping_address
          SET is_default = 1
          WHERE user_id = ?
          ORDER BY created_at DESC

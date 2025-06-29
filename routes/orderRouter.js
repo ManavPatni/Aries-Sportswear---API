@@ -10,6 +10,7 @@ const router = express.Router();
 
 // ---Manage orders---
 router.post('/create', authenticateToken, orderController.createOrder);
+router.post('/verify-payment', authenticateToken, orderController.verifyPayment);
 
 
 module.exports = router;
