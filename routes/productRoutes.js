@@ -1,11 +1,11 @@
 const express = require('express');
 const multer = require('multer');
 const authenticateToken = require('../middleware/authMiddleware');
-const categoryController = require('../controllers/products/categoryController');
-const productController = require('../controllers/products/productController');
-const recommendationController = require('../controllers/products/recommendationController');
-const tagController = require('../controllers/products/tagController');
-const reviewController = require('../controllers/products/reviewController');
+const categoryController = require('../controllers/product/categoryController');
+const productController = require('../controllers/product/productController');
+const recommendationController = require('../controllers/product/recommendationController');
+const tagController = require('../controllers/product/tagController');
+const reviewController = require('../controllers/product/reviewController');
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
-const Staff = require('../../models/staffModel');
-const RefreshToken = require('../../models/staffRefreshTokenModel');
+const Staff = require('../../models/staff/staffModel');
+const RefreshToken = require('../../models/staff/staffRefreshTokenModel');
 const bcrypt = require('bcryptjs');
 const tokenUtils = require('../../utils/tokenUtils');
 

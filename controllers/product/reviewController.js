@@ -1,7 +1,9 @@
-const db = require('../../db/database')
+const db = require('../../db/database');
+const NotificationController = require('../NotificationController');
+const notificationController = new NotificationController(db);
 
 const addReview = async (req, res) => {
-    const userId = req.user?.id;
+    const userId = req.user.id;
     const { productId } = req.params;
     const { rating, comment } = req.body;
 
@@ -36,6 +38,19 @@ const addReview = async (req, res) => {
             'INSERT INTO review (user_id, product_id, rating, comment) VALUES (?, ?, ?, ?)',
             [userId, productId, rating, comment]
         );
+
+        if (rating < 4) {
+            await notificationController.createNotification(
+                type = 'alert',
+                title = 'New Low Rating Received on Your Product',
+                description = `A customer rated one of your products ${rating} stars. Consider reviewing this product to improve customer satisfaction.`,
+                priority = 'medium',
+                deeplink = `https://ariessportswear.com/product/${productId}`,
+                target = {
+                    type: 'all'
+                }
+            );
+        }
 
         return res.status(200).json({ message: 'Review added successfully.' });
     } catch (error) {

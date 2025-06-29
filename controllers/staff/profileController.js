@@ -2,7 +2,7 @@ const db = require('../../db/database');
 const multer = require('multer');
 const path = require('path');
 const mediaController = require('../mediaController');
-const Staff = require('../../models/staffModel');
+const Staff = require('../../models/staff/staffModel');
 
 // Multer configuration with memory storage
 const upload = multer({

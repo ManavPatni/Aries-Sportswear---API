@@ -1,4 +1,4 @@
-const db = require('../db/database');
+const db = require('../../db/database');
 
 exports.create = async (data) => {
   return db.query(

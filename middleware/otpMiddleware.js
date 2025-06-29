@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const otpRequest = require('../models/otpRequestModel');
+const otpRequest = require('../models/user/otpRequestModel');
 
 const verifyOtp = async (req, res, next) => {
     const { email, otp } = req.body;

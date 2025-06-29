@@ -1,5 +1,5 @@
 const db = require('../../db/database');
-const Staff = require('../../models/staffModel');
+const Staff = require('../../models/staff/staffModel');
 const bcrypt = require('bcryptjs');
 const mediaController = require('../mediaController');
 const multer = require('multer');

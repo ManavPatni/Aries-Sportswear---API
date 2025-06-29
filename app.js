@@ -4,6 +4,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRouter');
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use(cors({
 app.use('/', productRoutes);
 app.use('/user', userRoutes);
 app.use('/staff', staffRoutes);
+app.use('/order', orderRoutes);
 
 // Health check endpoint
 app.get('/ping', (req, res) => {
