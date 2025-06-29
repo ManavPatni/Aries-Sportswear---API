@@ -158,7 +158,7 @@ const addShippingAddress = async (req, res) => {
   if (!address) return res.status(400).json({message: 'Missing or invalid address object'});
 
   try {
-    const address_id = await shippingAddressModel.addAddress(userId, address);
+    const address_id = await shippingshippingAddressModel.addAddress(userId, address);
     return res.json(201).json({ message: 'Address saved', address_id})
   } catch (err) {
     console.error( 'addShippingAddress error:', err );
@@ -172,7 +172,7 @@ const getShippingAddress = async (req, res) => {
     const userId = req.user.id;
     const getAll = req.query.all !== 'false';
 
-    const result = await addressModel.getUserAddress(userId, getAll);
+    const result = await shippingAddressModel.getUserAddress(userId, getAll);
 
     res.status(200).json({
       message: 'Address fetched successfully',
@@ -194,7 +194,7 @@ const updateShippingAddress = async (req, res) => {
       return res.status(400).json({ error: 'Missing addressId' });
     }
 
-    await addressModel.updateAddress(addressId, userId, req.body);
+    await shippingAddressModel.updateAddress(addressId, userId, req.body);
     res.status(200).json({ message: 'Address updated successfully' });
   } catch (err) {
     console.error('updateShippingAddress:', err);
@@ -210,7 +210,7 @@ const deleteShippingAddress = async (req, res) => {
       return res.status(400).json({ error: 'Missing addressId' });
     }
 
-    await addressModel.removeAddress(addressId, userId);
+    await shippingshippingAddressModel.removeAddress(addressId, userId);
     res.status(200).json({ message: 'Address removed successfully' });
   } catch (err) {
     console.error('deleteShippingAddress:', err);
