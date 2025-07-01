@@ -194,7 +194,7 @@ const updateShippingAddress = async (req, res) => {
       return res.status(400).json({ error: 'Missing addressId' });
     }
 
-    await shippingAddressModel.updateAddress(addressId, userId, req.body);
+    await shippingAddressModel.updateAddress(addressId, userId, address);
     res.status(200).json({ message: 'Address updated successfully' });
   } catch (err) {
     console.error('updateShippingAddress:', err);

@@ -4,7 +4,7 @@ const db = require('../../db/database');
  * Insert a new shipping address for a user.
  * @param {number}  userId – user.id
  * @param {Object} address
- * @returns {Promise<{address_id:number}>}
+ * @returns {Promise<{id:number}>}
  * @throws {Error} 400-style validation errors or DB errors.
  */
 exports.addAddress = async (userId, address) => {
@@ -84,7 +84,7 @@ exports.addAddress = async (userId, address) => {
 
     await conn.commit();
 
-    return { address_id: result.insertId };
+    return { id: result.insertId };
   } catch (err) {
     await conn.rollback();
     throw err;
@@ -182,7 +182,7 @@ exports.updateAddress = async (addressId, userId, updates) => {
     await conn.query(
       `UPDATE user_shipping_address
        SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP
-       WHERE address_id = ? AND user_id = ?`,
+       WHERE id = ? AND user_id = ?`,
       values,
     );
 
@@ -213,13 +213,13 @@ exports.removeAddress = async (addressId, userId) => {
 
     // Was this the default?
     const [[row]] = await conn.query(
-      'SELECT is_default FROM user_shipping_address WHERE address_id = ? AND user_id = ?',
+      'SELECT is_default FROM user_shipping_address WHERE id = ? AND user_id = ?',
       [addressId, userId],
     );
     if (!row) throw new Error('Address not found or does not belong to user');
 
     await conn.query(
-      'DELETE FROM user_shipping_address WHERE address_id = ? AND user_id = ?',
+      'DELETE FROM user_shipping_address WHERE id = ? AND user_id = ?',
       [addressId, userId],
     );
 
