@@ -8,7 +8,6 @@ const { sendOrderConfirmationEmail } = require('../../utils/emailService');
 const orderItemsModel = require('../../models/order/orderItemsModel');
 const orderStatusModel = require('../../models/order/orderStatusModel');
 
-const orderStatus = ['ordered', 'processing', 'shipping', 'out-for-delivery'];
 
 const createOrder = async (req, res) => {
   const userId = req.user.id;
@@ -308,7 +307,55 @@ const verifyPayment = async (req, res) => {
   }
 };
 
+const orderStatus = async (req, res) => {
+  const userId = req.user.id;
+  const { orderId } = req.body;
+
+  // Validate orderId
+  if (!orderId || isNaN(orderId)) {
+    return res.status(400).json({ success: false, message: 'orderId is required and must be a number' });
+  }
+
+  try {
+    // Check if order exists for the user
+    const [orders] = await db.query(
+      'SELECT id FROM orders WHERE user_id = ? AND id = ?',
+      [userId, orderId]
+    );
+
+    if (orders.length === 0) {
+      return res.status(404).json({ success: false, message: 'Order not found or unauthorized' });
+    }
+
+    // Fetch order status
+    const statusResult = await orderStatusModel.getOrderStatus(orderId, userId);
+
+    // Handle case where statusResult is not an array
+    let statusRows = Array.isArray(statusResult) ? statusResult : [statusResult];
+
+    if (statusRows.length === 0) {
+      return res.status(404).json({ success: false, message: 'No status found for this order' });
+    }
+
+    // Map statusRows to include only status, note, and created_at
+    const statuses = statusRows.map(({ status, note, created_at }) => ({
+      status,
+      note,
+      created_at,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      statuses,
+    });
+  } catch (error) {
+    console.error('getOrderStatus error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 module.exports = { 
   createOrder,
-  verifyPayment
+  verifyPayment,
+  orderStatus
 };
