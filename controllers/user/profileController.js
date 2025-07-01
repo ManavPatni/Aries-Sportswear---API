@@ -158,7 +158,7 @@ const addShippingAddress = async (req, res) => {
   if (!address) return res.status(400).json({message: 'Missing or invalid address object'});
 
   try {
-    const address_id = await shippingshippingAddressModel.addAddress(userId, address);
+    const address_id = await shippingAddressModel.addAddress(userId, address);
     return res.json(201).json({ message: 'Address saved', address_id})
   } catch (err) {
     console.error( 'addShippingAddress error:', err );
@@ -210,7 +210,7 @@ const deleteShippingAddress = async (req, res) => {
       return res.status(400).json({ error: 'Missing addressId' });
     }
 
-    await shippingshippingAddressModel.removeAddress(addressId, userId);
+    await shippingAddressModel.removeAddress(addressId, userId);
     res.status(200).json({ message: 'Address removed successfully' });
   } catch (err) {
     console.error('deleteShippingAddress:', err);
