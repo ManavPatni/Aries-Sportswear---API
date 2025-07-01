@@ -22,7 +22,7 @@ exports.addStatus = async (data, conn = null) => {
 };
 
 exports.getOrderStatus = async (order_id) => {
-  if (!order_id || !Number.isInteger(order_id)) {
+  if (!order_id) {
     throw new Error('Invalid order_id');
   }
 
