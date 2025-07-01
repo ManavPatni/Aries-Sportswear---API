@@ -309,7 +309,7 @@ const verifyPayment = async (req, res) => {
 
 const orderStatus = async (req, res) => {
   const userId = req.user.id;
-  const { orderId } = req.body;
+  const { orderId } = req.query;
 
   // Validate orderId
   if (!orderId || isNaN(orderId)) {
