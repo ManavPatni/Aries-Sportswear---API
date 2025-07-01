@@ -4,8 +4,9 @@ const crypto = require('crypto');
 const varientImageModel = require('../../models/product/variantImageModel');
 const NotificationController = require('../NotificationController');
 const notificationController = new NotificationController(db);
-const { sendOrderConfirmationEmail } = require('../../utils/emailUtils'); 
+const { sendOrderConfirmationEmail } = require('../../utils/emailService');
 const orderItemsModel = require('../../models/order/orderItemsModel');
+const orderStatusModel = require('../../models/order/orderStatusModel');
 
 const orderStatus = ['ordered', 'processing', 'shipping', 'out-for-delivery'];
 
@@ -218,8 +219,7 @@ const verifyPayment = async (req, res) => {
     /* Update payment status */
     const [updateResult] = await conn.query(
       `UPDATE orders 
-       SET payment_status = 'successful', 
-           order_status = 'ordered' 
+       SET payment_status = 'successful'
        WHERE payment_id = ? AND user_id = ?`,
       [razorpay_order_id, userId]
     );
@@ -232,7 +232,7 @@ const verifyPayment = async (req, res) => {
 
     /* Fetch order and item details for notifications and email */
     const [orderRows] = await conn.query(
-      `SELECT o.order_id, o.grand_total, u.email
+      `SELECT o.id AS order_id, u.email
        FROM orders o
        JOIN user u ON u.id = o.user_id
        WHERE o.payment_id = ? AND o.user_id = ?`,
@@ -247,7 +247,15 @@ const verifyPayment = async (req, res) => {
 
     const order = orderRows[0];
 
-    const [items] = await orderItemsModel.getOrderItems(order.order_id)
+    /* Add order status */
+    await orderStatusModel.addStatus({
+      order_id: order.order_id,
+      status: 'ordered',
+      note: `Order placed at ${new Date().toISOString()}`
+    }, conn); 
+
+    /* Fetch order items */
+    const items = await orderItemsModel.getOrderItems(order.order_id, conn);
 
     /* ---------- 4. Create Notifications ---------- */
     // Admin notification
@@ -256,7 +264,7 @@ const verifyPayment = async (req, res) => {
       title = 'New Order Received',
       description = `A new order #${order.order_id} has been placed.`,
       priority = 'high',
-      deeplink = `https://admin.ariessportswear.com/orders/${order.order_id}`,
+      deeplink =`https://admin.ariessportswear.com/orders/${order.order_id}`,
       target = {
         type: 'all'
       }
@@ -274,12 +282,11 @@ const verifyPayment = async (req, res) => {
         unit_price: item.unit_price,
         img_path: item.img_path
       })),
-      total: order.grand_total / 100 // Convert paise to rupees
+      total: order.grand_total / 100
     });
 
     if (!emailSent) {
       console.warn(`Failed to send email for order #${order.order_id} to ${order.email}`);
-      // Note: Not rolling back transaction as email failure isn't critical
     }
 
     /* ---------- 6. Commit Transaction ---------- */

@@ -10,39 +10,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-exports.sendOtpEmail = async (to, otp) => {
-  if (typeof to !== 'string') return false;
-
-  const html = `
-    <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 30px;">
-      <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <h2 style="color: #222; text-align: center;">Email Verification</h2>
-        <p style="font-size: 15px; color: #555;">Please use the following code to verify your email address:</p>
-        <div style="text-align: center; margin: 30px 0;">
-          <span style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #000;">${otp}</span>
-        </div>
-        <p style="font-size: 14px; color: #888; text-align: center;">Do not share this code with anyone.</p>
-      </div>
-      <p style="text-align: center; font-size: 12px; color: #aaa; margin-top: 20px;">
-        © ${new Date().getFullYear()} Aries Sportswear. All rights reserved.
-      </p>
-    </div>
-  `;
-
-  try {
-    await transporter.sendMail({
-      from: `"Aries Sportswear" <${process.env.EMAIL_USER}>`,
-      to: to.trim(),
-      subject: 'Your Aries Sportswear OTP Code',
-      html
-    });
-    return true;
-  } catch (error) {
-    console.error('sendOtpEmail error:', error);
-    return false;
-  }
-};
-
 exports.sendOrderConfirmationEmail = async (to, orderDetails) => {
   if (typeof to !== 'string' || !to.trim()) {
     return false;
@@ -133,6 +100,39 @@ exports.sendOrderConfirmationEmail = async (to, orderDetails) => {
     return true;
   } catch (error) {
     console.error('sendOrderConfirmationEmail error:', error);
+    return false;
+  }
+};
+
+exports.sendOtpEmail = async (to, otp) => {
+  if (typeof to !== 'string') return false;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 30px;">
+      <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 Dance 2px 8px rgba(0,0,0,0.05);">
+        <h2 style="color: #222; text-align: center;">Email Verification</h2>
+        <p style="font-size: 15px; color: #555;">Please use the following code to verify your email address:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #000;">${otp}</span>
+        </div>
+        <p style="font-size: 14px; color: #888; text-align: center;">Do not share this code with anyone.</p>
+      </div>
+      <p style="text-align: center; font-size: 12px; color: #aaa; margin-top: 20px;">
+        © ${new Date().getFullYear()} Aries Sportswear. All rights reserved.
+      </p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: `"Aries Sportswear" <${process.env.EMAIL_USER}>`,
+      to: to.trim(),
+      subject: 'Your Aries Sportswear OTP Code',
+      html
+    });
+    return true;
+  } catch (error) {
+    console.error('sendOtpEmail error:', error);
     return false;
   }
 };
