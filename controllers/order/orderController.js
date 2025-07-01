@@ -4,6 +4,8 @@ const crypto = require('crypto');
 const varientImageModel = require('../../models/product/variantImageModel');
 const NotificationController = require('../NotificationController');
 const notificationController = new NotificationController(db);
+const { sendOrderConfirmationEmail } = require('../../utils/emailUtils'); 
+const orderItemsModel = require('../../models/order/orderItemsModel');
 
 const orderStatus = ['ordered', 'processing', 'shipping', 'out-for-delivery'];
 
@@ -228,30 +230,59 @@ const verifyPayment = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Order not found or unauthorized' });
     }
 
-    /* Fetch order details for notification */
-    const [[order]] = await conn.query(
-      `SELECT order_id, grand_total 
-       FROM orders 
-       WHERE payment_id = ? AND user_id = ?`,
+    /* Fetch order and item details for notifications and email */
+    const [orderRows] = await conn.query(
+      `SELECT o.order_id, o.grand_total, u.email
+       FROM orders o
+       JOIN user u ON u.id = o.user_id
+       WHERE o.payment_id = ? AND o.user_id = ?`,
       [razorpay_order_id, userId]
     );
 
-    /* ---------- 4. Create Notifications ---------- */
-    // User email - notification Todo
+    if (!orderRows.length) {
+      await conn.rollback();
+      conn.release();
+      return res.status(404).json({ success: false, message: 'Order or user not found' });
+    }
 
+    const order = orderRows[0];
+
+    const [items] = await orderItemsModel.getOrderItems(order.order_id)
+
+    /* ---------- 4. Create Notifications ---------- */
     // Admin notification
-    await notificationController.createNotification({
-      type: 'new_order',
-      title: 'New Order Received',
-      description: `A new order #${order.order_id} has been placed.`,
-      priority: 'high',
-      deeplink: `https://admin.ariessportswear.com/order/${order.order_id}`,
-      target: {
-        type: 'admin'
+    await notificationController.createNotification(
+      type = 'order',
+      title = 'New Order Received',
+      description = `A new order #${order.order_id} has been placed.`,
+      priority = 'high',
+      deeplink = `https://admin.ariessportswear.com/orders/${order.order_id}`,
+      target = {
+        type: 'all'
       }
+    );
+
+    /* ---------- 5. Send User Email Notification ---------- */
+    const emailSent = await sendOrderConfirmationEmail(order.email, {
+      orderId: order.order_id,
+      items: items.map(item => ({
+        product_name: item.product_name,
+        variant_name: item.variant_name,
+        size: item.size,
+        color: item.color,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        img_path: item.img_path
+      })),
+      total: order.grand_total / 100 // Convert paise to rupees
     });
 
-    /* ---------- 5. Commit Transaction ---------- */
+    if (!emailSent) {
+      console.warn(`Failed to send email for order #${order.order_id} to ${order.email}`);
+      // Note: Not rolling back transaction as email failure isn't critical
+    }
+
+    /* ---------- 6. Commit Transaction ---------- */
     await conn.commit();
     conn.release();
 
@@ -262,7 +293,7 @@ const verifyPayment = async (req, res) => {
     });
 
   } catch (err) {
-    /* ---------- 6. Rollback on Error ---------- */
+    /* ---------- 7. Rollback on Error ---------- */
     await conn.rollback();
     conn.release();
     console.error('verifyPayment error:', err);

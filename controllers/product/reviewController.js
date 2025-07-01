@@ -45,7 +45,7 @@ const addReview = async (req, res) => {
                 title = 'New Low Rating Received on Your Product',
                 description = `A customer rated one of your products ${rating} stars. Consider reviewing this product to improve customer satisfaction.`,
                 priority = 'medium',
-                deeplink = `https://ariessportswear.com/product/${productId}`,
+                deeplink = `https://ariessportswear.com/product-details/${productId}`,
                 target = {
                     type: 'all'
                 }
