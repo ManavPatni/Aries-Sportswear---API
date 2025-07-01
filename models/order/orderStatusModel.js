@@ -29,7 +29,7 @@ exports.getOrderStatus = async (order_id) => {
   const [rows] = await db.query(
     `SELECT order_id, status, note, created_by, created_at
      FROM order_status 
-     WHERE order_id = ? 
+     WHERE order_id = ?
      ORDER BY created_at ASC`,
     [order_id]
   );
