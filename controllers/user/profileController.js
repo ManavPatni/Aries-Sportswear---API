@@ -159,7 +159,7 @@ const addShippingAddress = async (req, res) => {
 
   try {
     const address_id = await shippingAddressModel.addAddress(userId, address);
-    return res.json(201).json({ message: 'Address saved', address_id})
+    return res.json(201).json({ message: 'Address saved'});
   } catch (err) {
     console.error( 'addShippingAddress error:', err );
     return res.status(500).json({ message: 'Internal server error', error: err.message });
