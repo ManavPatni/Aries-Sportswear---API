@@ -51,12 +51,6 @@ git pull origin master || {
 #     }
 # fi
 
-echo "Setting up database..."
-php /home/ariesspo/api/db/setup_database.php 2>> "$LOG_FILE" || {
-    log_failure "Database setup failed"
-    exit 1
-}
-
 # Kill old process
 if [ -f "$PID_FILE" ]; then
     OLD_PID=$(cat "$PID_FILE")
