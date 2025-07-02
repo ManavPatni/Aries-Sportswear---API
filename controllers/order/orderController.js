@@ -307,49 +307,112 @@ const verifyPayment = async (req, res) => {
   }
 };
 
-const orderStatus = async (req, res) => {
-  const userId = req.user.id;
-  const { orderId } = req.query;
+const orderDetails = async (req, res) => {
+  const userId = req.user?.id;
+  const staffId = req.staff?.id;
+  const orderId = parseInt(req.query.orderId, 10);
 
-  // Validate orderId
+  /* ---------- 1. Input Validation ---------- */
+  if (!userId && !staffId) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
   if (!orderId || isNaN(orderId)) {
-    return res.status(400).json({ success: false, message: 'orderId is required and must be a number' });
+    return res.status(400).json({ success: false, message: 'Valid orderId is required' });
   }
 
+  const requestedByStaff = !!staffId;
+
+  /* ---------- 2. Database Transaction ---------- */
+  const conn = await db.getConnection();
+  await conn.beginTransaction();
+
   try {
-    // Check if order exists for the user
-    const [orders] = await db.query(
-      'SELECT id FROM orders WHERE user_id = ? AND id = ?',
-      [userId, orderId]
+    /* Fetch order details with shipping information */
+    const [orderRows] = await conn.query(
+      requestedByStaff
+        ? `SELECT id, user_id, payment_id, payment_status, 
+                  shipping_fee, tax_amount, discount_amount,
+                  shipping_name, shipping_phone, address_line1, address_line2,
+                  landmark, city, state, country, postal_code, digipin
+           FROM orders 
+           WHERE id = ?`
+        : `SELECT id, user_id, payment_id, payment_status, 
+                  shipping_fee, tax_amount, discount_amount,
+                  shipping_name, shipping_phone, address_line1, address_line2,
+                  landmark, city, state, country, postal_code, digipin
+           FROM orders 
+           WHERE id = ? AND user_id = ?`,
+      requestedByStaff ? [orderId] : [orderId, userId]
     );
 
-    if (orders.length === 0) {
+    if (!orderRows.length) {
+      await conn.rollback();
+      conn.release();
       return res.status(404).json({ success: false, message: 'Order not found or unauthorized' });
     }
 
-    // Fetch order status
-    const statusResult = await orderStatusModel.getOrderStatus(orderId, userId);
+    const order = orderRows[0];
 
-    // Handle case where statusResult is not an array
-    let statusRows = Array.isArray(statusResult) ? statusResult : [statusResult];
+    /* Fetch order items */
+    const items = await orderItemsModel.getOrderItems(orderId, conn);
 
-    if (statusRows.length === 0) {
-      return res.status(404).json({ success: false, message: 'No status found for this order' });
-    }
+    /* Fetch order status history */
+    const statuses = await orderStatusModel.getOrderStatus(orderId, conn);
 
-    // Map statusRows to include only status, note, and created_at
-    const statuses = statusRows.map(({ status, note, created_at }) => ({
-      status,
-      note,
-      created_at,
-    }));
-
-    return res.status(200).json({
+    /* ---------- 3. Structure Response ---------- */
+    const response = {
       success: true,
-      statuses,
-    });
+      order: {
+        order_id: order.id,
+        user_id: order.user_id,
+        payment_id: order.payment_id,
+        payment_status: order.payment_status,
+        order_status: order.order_status,
+        shipping_fee: (order.shipping_fee / 100).toFixed(2),
+        tax_amount: (order.tax_amount / 100).toFixed(2),
+        discount_amount: (order.discount_amount / 100).toFixed(2),
+        coupon_id: order.coupon_id || null,
+        shipping_address: {
+          name: order.shipping_name,
+          phone: order.shipping_phone,
+          line1: order.address_line1,
+          line2: order.address_line2 || null,
+          landmark: order.landmark || null,
+          city: order.city,
+          state: order.state,
+          country: order.country,
+          postal_code: order.postal_code,
+          digipin: order.digipin || null
+        },
+        items: items.map(item => ({
+          product_name: item.product_name,
+          variant_name: item.variant_name,
+          size: item.size || null,
+          color: item.color || null,
+          quantity: item.quantity,
+          unit_price: (item.unit_price / 100).toFixed(2), // Convert paise to rupees
+          img_path: item.img_path || null
+        })),
+        statuses: statuses.map(status => ({
+          status: status.status,
+          note: status.note || null,
+          created_at: status.created_at,
+          created_by: status.created_by || null
+        }))
+      }
+    };
+
+    /* ---------- 4. Commit Transaction ---------- */
+    await conn.commit();
+    conn.release();
+
+    return res.status(200).json(response);
+
   } catch (error) {
-    console.error('getOrderStatus error:', error);
+    /* ---------- 5. Rollback on Error ---------- */
+    await conn.rollback();
+    conn.release();
+    console.error('orderDetails error:', error);
     return res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
@@ -357,5 +420,5 @@ const orderStatus = async (req, res) => {
 module.exports = { 
   createOrder,
   verifyPayment,
-  orderStatus
+  orderDetails
 };
