@@ -26,6 +26,7 @@ router.get('/details', authenticateToken, profileController.getDetails);
 router.put('/details', authenticateToken, profileController.updateDeatils);
 router.post('/logout', authenticateToken, authController.logout);
 router.delete('/', authenticateToken, profileController.deleteUser);
+router.get('/orders', authenticateToken, profileController.getAllOrders);
 
 // --- Cart ---
 router.post('/cart/add-item', authenticateToken, cartController.addToCart);
