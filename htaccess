@@ -1,0 +1,35 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/ariesspo/api"
+PassengerBaseURI "/"
+PassengerNodejs "/home/ariesspo/nodevenv/api/18/bin/node"
+PassengerAppType node
+PassengerStartupFile app.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END
+
+# Allow GitHub webhook and bypass Cloudflare caching and security
+<Files "deploy.php">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </IfModule>
+
+    # Disable mod_security for this file (if active)
+    <IfModule mod_security.c>
+        SecFilterEngine Off
+        SecFilterScanPOST Off
+    </IfModule>
+
+    # Set correct content type and CORS if needed
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Origin "*"
+        Header set Content-Type "application/json"
+    </IfModule>
+
+    # Force PHP to execute (in case of MIME mismatch)
+    ForceType application/x-httpd-php
+</Files>
