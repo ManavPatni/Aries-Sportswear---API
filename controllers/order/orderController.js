@@ -8,6 +8,16 @@ const { sendOrderConfirmationEmail } = require('../../utils/emailService');
 const orderItemsModel = require('../../models/order/orderItemsModel');
 const orderStatusModel = require('../../models/order/orderStatusModel');
 
+const ORDER_FLOW = [
+  'Ordered',
+  'Shipping',
+  'Out for delivery',
+  'Returned',
+  'Replace',
+  'Refunded',
+];
+
+const EARLY_CANCEL_ALLOWED_FROM = ['Ordered', 'Shipping'];
 
 const createOrder = async (req, res) => {
   const userId = req.user.id;
@@ -113,7 +123,7 @@ const createOrder = async (req, res) => {
       [
         userId,
         rzOrderId,
-        'pending',
+        'Pending',
         shipping_fee,
         tax_amount,
         discount_amount,
@@ -158,9 +168,21 @@ const createOrder = async (req, res) => {
       );
     }
 
-    /* ---------- 8. Commit Transaction ---------- */
+    /* ---------- 8. Commit Transaction & notify for low stock---------- */
     await conn.commit();
     conn.release();
+
+    // // Admin notification
+    // await notificationController.createNotification(
+    //   type = 'stock',
+    //   title = 'Low stock Alert',
+    //   description = `A new order #${order.order_id} has been placed.`,
+    //   priority = 'high',
+    //   deeplink =`https://admin.ariessportswear.com/orders/${order.order_id}`,
+    //   target = {
+    //     type: 'all'
+    //   }
+    // );
 
     return res.status(201).json({
       success: true,
@@ -218,7 +240,7 @@ const verifyPayment = async (req, res) => {
     /* Update payment status */
     const [updateResult] = await conn.query(
       `UPDATE orders 
-       SET payment_status = 'successful'
+       SET payment_status = 'Paid'
        WHERE payment_id = ? AND user_id = ?`,
       [razorpay_order_id, userId]
     );
@@ -249,7 +271,7 @@ const verifyPayment = async (req, res) => {
     /* Add order status */
     await orderStatusModel.addStatus({
       order_id: order.order_id,
-      status: 'ordered',
+      status: 'Ordered',
       note: `Order placed at ${new Date().toISOString()}`
     }, conn); 
 
@@ -322,13 +344,10 @@ const orderDetails = async (req, res) => {
 
   const requestedByStaff = !!staffId;
 
-  /* ---------- 2. Database Transaction ---------- */
-  const conn = await db.getConnection();
-  await conn.beginTransaction();
-
+  /* ---------- 2. Database Query ---------- */
   try {
     /* Fetch order details with shipping information */
-    const [orderRows] = await conn.query(
+    const [orderRows] = await db.query(
       requestedByStaff
         ? `SELECT id, user_id, payment_id, payment_status, 
                   shipping_fee, tax_amount, discount_amount,
@@ -346,18 +365,16 @@ const orderDetails = async (req, res) => {
     );
 
     if (!orderRows.length) {
-      await conn.rollback();
-      conn.release();
       return res.status(404).json({ success: false, message: 'Order not found or unauthorized' });
     }
 
     const order = orderRows[0];
 
     /* Fetch order items */
-    const items = await orderItemsModel.getOrderItems(orderId, conn);
+    const items = await orderItemsModel.getOrderItems(orderId);
 
     /* Fetch order status history */
-    const statuses = await orderStatusModel.getOrderStatus(orderId, conn);
+    const statuses = await orderStatusModel.getOrderStatus(orderId);
 
     /* ---------- 3. Structure Response ---------- */
     const response = {
@@ -402,23 +419,264 @@ const orderDetails = async (req, res) => {
       }
     };
 
-    /* ---------- 4. Commit Transaction ---------- */
-    await conn.commit();
-    conn.release();
-
     return res.status(200).json(response);
 
   } catch (error) {
-    /* ---------- 5. Rollback on Error ---------- */
-    await conn.rollback();
-    conn.release();
+    /* ---------- 5. on Error ---------- */
     console.error('orderDetails error:', error);
     return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+const getAllOrders = async (req, res) => {
+  const staffId = req.staff?.id;
+  const { status, offset = 0, limit = 10 } = req.query;
+
+  if (!staffId) return res.status(404).json({ message: 'Unauthorized'});
+
+  try {
+    const params = [];
+    let statusFilterClause = '';
+
+    if (status) {
+      statusFilterClause = 'WHERE os.status = ?';
+      params.push(status);
+    }
+
+    const [rows] = await db.execute(
+      `
+      SELECT 
+        o.id AS order_id,
+        o.user_id,
+        o.payment_id,
+        o.payment_status,
+        o.shipping_fee,
+        o.tax_amount,
+        o.discount_amount,
+        o.shipping_name,
+        o.shipping_phone,
+        o.address_line1,
+        o.address_line2,
+        o.landmark,
+        o.city,
+        o.state,
+        o.country,
+        o.postal_code,
+        o.digipin,
+        o.created_at,
+        o.updated_at,
+        os.status AS current_status,
+        oi.unit_price,
+        oi.quantity,
+        (oi.unit_price * oi.quantity) AS item_total
+      FROM orders o
+      LEFT JOIN (
+        SELECT s1.order_id, s1.status
+        FROM order_status s1
+        INNER JOIN (
+          SELECT order_id, MAX(created_at) AS latest_time
+          FROM order_status
+          GROUP BY order_id
+        ) s2 ON s1.order_id = s2.order_id AND s1.created_at = s2.latest_time
+      ) os ON os.order_id = o.id
+      LEFT JOIN order_items oi ON oi.order_id = o.id
+      ${statusFilterClause}
+      ORDER BY o.created_at DESC
+      LIMIT ? OFFSET ?
+      `,
+      [...params, limit, offset]
+    );
+
+    // Group results by order_id
+    const ordersMap = new Map();
+
+    for (const row of rows) {
+      const orderId = row.order_id;
+      if (!ordersMap.has(orderId)) {
+        ordersMap.set(orderId, {
+          id: orderId,
+          user_id: row.user_id,
+          payment_id: row.payment_id,
+          payment_status: row.payment_status,
+          shipping_fee: Number(row.shipping_fee || 0),
+          tax_amount: Number(row.tax_amount || 0),
+          discount_amount: Number(row.discount_amount || 0),
+          current_status: row.current_status,
+          address: {
+            name: row.shipping_name,
+            phone: row.shipping_phone,
+            line1: row.address_line1,
+            line2: row.address_line2,
+            landmark: row.landmark,
+            city: row.city,
+            state: row.state,
+            country: row.country,
+            postal_code: row.postal_code,
+            digipin: row.digipin
+          },
+          items: [],
+          total_amount: 0,
+          created_at: row.created_at,
+          updated_at: row.updated_at
+        });
+      }
+
+      if (row.unit_price && row.quantity) {
+        const itemTotal = Number(row.unit_price) * Number(row.quantity);
+        ordersMap.get(orderId).items.push({
+          unit_price: Number(row.unit_price),
+          quantity: Number(row.quantity),
+          item_total: Number(itemTotal.toFixed(2))
+        });
+
+        ordersMap.get(orderId).total_amount += itemTotal;
+      }
+    }
+
+    // Finalize total_amount with shipping, tax, discount
+    for (const order of ordersMap.values()) {
+      order.total_amount = Number(
+        (
+          order.total_amount +
+          order.shipping_fee +
+          order.tax_amount -
+          order.discount_amount
+        ).toFixed(2)
+      );
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: ordersMap.size,
+      orders: Array.from(ordersMap.values())
+    });
+  } catch (err) {
+    console.error('getAllOrders error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  const staffId = req.staff.id;
+  const {
+    orderId,
+    status,
+    note = null,
+    shippingId = null,
+  } = req.body;
+
+  /* ---------- basic validation ---------- */
+  if (!orderId || !status) {
+    return res
+      .status(400)
+      .json({ message: 'orderId and status are required' });
+  }
+  const knownStatus =
+    ORDER_FLOW.includes(status) || status === 'Canceled';
+  if (!knownStatus) {
+    return res.status(400).json({ message: `Unknown status '${status}'` });
+  }
+
+  try {
+    /* ---------- order must exist ---------- */
+    const [[order]] = await db.execute(
+      'SELECT id, shipping_id FROM orders WHERE id = ? LIMIT 1',
+      [orderId],
+    );
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    /* ---------- latest status ---------- */
+    const [[lastRow]] = await db.execute(
+      'SELECT id, status FROM order_status WHERE order_id = ? ORDER BY created_at DESC LIMIT 1',
+      [orderId],
+    );
+    const lastStatus = lastRow ? lastRow.status : null;
+
+    /* ---------- CASE A: update Shipping note only ---------- */
+    if (lastStatus === 'Shipping' && status === 'Shipping') {
+      if (!note) {
+        return res
+          .status(400)
+          .json({ message: 'note is required when updating Shipping note' });
+      }
+      await db.execute(
+        'UPDATE order_status SET note = ?, changed_by = ? WHERE id = ?',
+        [note, staffId, lastRow.id],
+      );
+      return res
+        .status(200)
+        .json({ success: true, message: 'Shipping note updated' });
+    }
+
+    /* ---------- transition rules ---------- */
+    let ok = false;
+
+    // 1) first ever row must be Ordered
+    if (!lastStatus && status === 'Ordered') ok = true;
+
+    // 2) early cancel
+    if (
+      !ok &&
+      status === 'Canceled' &&
+      EARLY_CANCEL_ALLOWED_FROM.includes(lastStatus)
+    )
+      ok = true;
+
+    // 3) strict forward move in main flow
+    if (!ok && lastStatus && ORDER_FLOW.includes(lastStatus)) {
+      const nextExpected =
+        ORDER_FLOW[ORDER_FLOW.indexOf(lastStatus) + 1] ?? null;
+      ok = status === nextExpected;
+    }
+
+    if (!ok) {
+      return res.status(409).json({
+        message: `Cannot change status from '${lastStatus ?? 'N/A'}' to '${status}'`,
+      });
+    }
+
+    /* ---------- Ordered ➜ Shipping needs shippingId ---------- */
+    if (lastStatus === 'Ordered' && status === 'Shipping' && !shippingId) {
+      return res
+        .status(400)
+        .json({ message: 'shippingId is required when moving to Shipping' });
+    }
+
+    /* ---------- write DB changes atomically ---------- */
+    await db.beginTransaction();
+    await db.execute(
+      'INSERT INTO order_status (order_id, status, note, changed_by) VALUES (?, ?, ?, ?)',
+      [orderId, status, note, staffId],
+    );
+
+    // update orders.status; add shipping_id if supplied
+    const orderUpdateSql =
+      shippingId != null 
+      'UPDATE orders SET shipping_id = ? WHERE id = ?';
+    const orderUpdateParams =
+      shippingId != null [shippingId, orderId];
+    await db.execute(orderUpdateSql, orderUpdateParams);
+
+    await db.commit();
+    return res
+      .status(200)
+      .json({ success: true, message: `Order status updated to '${status}'` });
+  } catch (err) {
+    await db.rollback();
+    console.error('updateOrderStatus error:', err);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Internal server error' });
   }
 };
 
 module.exports = { 
   createOrder,
   verifyPayment,
-  orderDetails
+  orderDetails,
+  getAllOrders,
+  updateOrderStatus
 };
