@@ -218,6 +218,77 @@ const deleteShippingAddress = async (req, res) => {
   }
 };
 
+const getAllOrders = async(req, res) => {
+  const userId = req.user.id;
+  const { offset = 0, limit = 10 } = req.query;
+
+  try {
+    const [rows] = await db.query(
+      `
+      SELECT
+        o.id AS order_id,
+        o.payment_status,
+        o.shipping_fee,
+        o.tax_amount,
+        o.discount_amount,
+        o.created_at,
+        o.updated_at,
+
+        os.status AS current_status,
+
+        COUNT(oi.id) AS item_count,
+        SUM(oi.unit_price * oi.quantity) AS items_total
+      FROM orders o
+      LEFT JOIN (
+        SELECT s1.order_id, s1.status
+        FROM order_status s1
+        JOIN (
+          SELECT order_id, MAX(created_at) AS latest_time
+          FROM order_status
+          GROUP BY order_id
+        ) s2
+          ON s1.order_id = s2.order_id
+         AND s1.created_at = s2.latest_time
+      ) os ON os.order_id = o.id
+      LEFT JOIN order_items oi ON oi.order_id = o.id
+      WHERE o.user_id = ?
+      GROUP BY o.id
+      ORDER BY o.created_at DESC
+      LIMIT ? OFFSET ?
+      `,
+      [userId, limit, offset]
+    );
+
+    // Prepare response
+    const orders = rows.map(row => ({
+      id             : row.order_id,
+      payment_status : row.payment_status,
+      current_status : row.current_status ?? null,
+      item_count     : Number(row.item_count ?? 0),
+      total_amount   : Number(
+        (
+          Number(row.items_total ?? 0) +
+          Number(row.shipping_fee ?? 0) +
+          Number(row.tax_amount ?? 0) -
+          Number(row.discount_amount ?? 0)
+        ).toFixed(2)
+      ),
+      created_at     : row.created_at,
+      updated_at     : row.updated_at,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      count  : orders.length,
+      orders
+    });
+
+  } catch (err) {
+    console.error('getAllOrders:', err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   getDetails,
   updateDeatils,
@@ -225,7 +296,8 @@ module.exports = {
   addShippingAddress,
   getShippingAddress,
   updateShippingAddress,
-  deleteShippingAddress
+  deleteShippingAddress,
+  getAllOrders
 };
 
 /*
