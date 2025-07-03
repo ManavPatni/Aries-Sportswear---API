@@ -24,6 +24,7 @@ router.post('/refresh-token', authController.refreshToken);
 // --- Details and profile ---
 router.get('/details', authenticateToken, profileController.getDetails);
 router.put('/details', authenticateToken, profileController.updateDeatils);
+router.post('/logout', authenticateToken, authController.logout);
 router.delete('/', authenticateToken, profileController.deleteUser);
 
 // --- Cart ---

@@ -22,6 +22,7 @@ router.post('/refresh-token', authController.refreshToken);
 // --- Logged-in staff details ---
 router.get('/details', authenticateToken, profileController.getDeatils);
 router.put('/details', authenticateToken, profileController.updateDetails);
+router.post('/logout', authenticateToken, authController.logout);
 
 // --- Notification ---
 router.get('/notification', authenticateToken, async (req, res) => {
