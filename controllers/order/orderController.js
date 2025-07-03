@@ -568,108 +568,100 @@ const updateOrderStatus = async (req, res) => {
     shippingId = null,
   } = req.body;
 
-  /* ---------- basic validation ---------- */
+  // Basic validation
   if (!orderId || !status) {
-    return res
-      .status(400)
-      .json({ message: 'orderId and status are required' });
+    return res.status(400).json({ message: 'orderId and status are required' });
   }
-  const knownStatus =
-    ORDER_FLOW.includes(status) || status === 'Canceled';
+
+  const knownStatus = ORDER_FLOW.includes(status) || status === 'Canceled';
   if (!knownStatus) {
     return res.status(400).json({ message: `Unknown status '${status}'` });
   }
 
+  let conn;
+
   try {
-    /* ---------- order must exist ---------- */
-    const [[order]] = await db.execute(
-      'SELECT id, shipping_id FROM orders WHERE id = ? LIMIT 1',
+    conn = await db.getConnection();
+    await conn.beginTransaction();
+
+    // Lock the order row to prevent race condition
+    const [[order]] = await conn.execute(
+      'SELECT id, shipping_id FROM orders WHERE id = ? LIMIT 1 FOR UPDATE',
       [orderId],
     );
-    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (!order) {
+      await conn.rollback();
+      return res.status(404).json({ message: 'Order not found' });
+    }
 
-    /* ---------- latest status ---------- */
-    const [[lastRow]] = await db.execute(
+    // Fetch last status
+    const [[lastRow]] = await conn.execute(
       'SELECT id, status FROM order_status WHERE order_id = ? ORDER BY created_at DESC LIMIT 1',
       [orderId],
     );
     const lastStatus = lastRow ? lastRow.status : null;
 
-    /* ---------- CASE A: update Shipping note only ---------- */
+    // Case: Shipping note update only
     if (lastStatus === 'Shipping' && status === 'Shipping') {
       if (!note) {
-        return res
-          .status(400)
-          .json({ message: 'note is required when updating Shipping note' });
+        await conn.rollback();
+        return res.status(400).json({ message: 'note is required when updating Shipping note' });
       }
-      await db.execute(
-        'UPDATE order_status SET note = ?, changed_by = ? WHERE id = ?',
+      await conn.execute(
+        'UPDATE order_status SET note = ?, created_by = ? WHERE id = ?',
         [note, staffId, lastRow.id],
       );
-      return res
-        .status(200)
-        .json({ success: true, message: 'Shipping note updated' });
+      await conn.commit();
+      return res.status(200).json({ success: true, message: 'Shipping note updated' });
     }
 
-    /* ---------- transition rules ---------- */
+    // Transition rules
     let ok = false;
 
-    // 1) first ever row must be Ordered
     if (!lastStatus && status === 'Ordered') ok = true;
 
-    // 2) early cancel
-    if (
-      !ok &&
-      status === 'Canceled' &&
-      EARLY_CANCEL_ALLOWED_FROM.includes(lastStatus)
-    )
-      ok = true;
+    if (!ok && status === 'Canceled' && EARLY_CANCEL_ALLOWED_FROM.includes(lastStatus)) ok = true;
 
-    // 3) strict forward move in main flow
     if (!ok && lastStatus && ORDER_FLOW.includes(lastStatus)) {
-      const nextExpected =
-        ORDER_FLOW[ORDER_FLOW.indexOf(lastStatus) + 1] ?? null;
+      const nextExpected = ORDER_FLOW[ORDER_FLOW.indexOf(lastStatus) + 1] ?? null;
       ok = status === nextExpected;
     }
 
     if (!ok) {
+      await conn.rollback();
       return res.status(409).json({
         message: `Cannot change status from '${lastStatus ?? 'N/A'}' to '${status}'`,
       });
     }
 
-    /* ---------- Ordered ➜ Shipping needs shippingId ---------- */
+    // Ordered ➜ Shipping requires shippingId
     if (lastStatus === 'Ordered' && status === 'Shipping' && !shippingId) {
-      return res
-        .status(400)
-        .json({ message: 'shippingId is required when moving to Shipping' });
+      await conn.rollback();
+      return res.status(400).json({ message: 'shippingId is required when moving to Shipping' });
     }
 
-    /* ---------- write DB changes atomically ---------- */
-    await db.beginTransaction();
-    await db.execute(
-      'INSERT INTO order_status (order_id, status, note, changed_by) VALUES (?, ?, ?, ?)',
+    // Insert new status
+    await conn.execute(
+      'INSERT INTO order_status (order_id, status, note, created_by) VALUES (?, ?, ?, ?)',
       [orderId, status, note, staffId],
     );
 
-    // update orders.status; add shipping_id if supplied
-    const orderUpdateSql =
-      shippingId != null 
-      'UPDATE orders SET shipping_id = ? WHERE id = ?';
-    const orderUpdateParams =
-      shippingId != null [shippingId, orderId];
-    await db.execute(orderUpdateSql, orderUpdateParams);
+    // Update shipping_id if supplied
+    if (shippingId !== null) {
+      await conn.execute(
+        'UPDATE orders SET shipping_id = ? WHERE id = ?',
+        [shippingId, orderId],
+      );
+    }
 
-    await db.commit();
-    return res
-      .status(200)
-      .json({ success: true, message: `Order status updated to '${status}'` });
+    await conn.commit();
+    return res.status(200).json({ success: true, message: `Order status updated to '${status}'` });
   } catch (err) {
-    await db.rollback();
+    if (conn) await conn.rollback();
     console.error('updateOrderStatus error:', err);
-    return res
-      .status(500)
-      .json({ success: false, message: 'Internal server error' });
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  } finally {
+    if (conn) conn.release();
   }
 };
 
