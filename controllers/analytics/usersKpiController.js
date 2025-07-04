@@ -28,7 +28,7 @@ const getUsersKpi = async (req, res) => {
 
         const customersChange =
             previousCustomers === 0
-                ? '0%'
+                ? null
                 : ((currentCustomers - previousCustomers) / previousCustomers) * 100;
 
         // --- 2) New registered users in current period ---
@@ -55,7 +55,7 @@ const getUsersKpi = async (req, res) => {
                 count: currentCustomers,
                 change: customersChange !== null
                     ? (customersChange > 0 ? '+' : '') + customersChange.toFixed(0) + '%'
-                    : null
+                    : '0%'
             },
             newUsers: newUsers.map(user => ({
                 id: user.id,
