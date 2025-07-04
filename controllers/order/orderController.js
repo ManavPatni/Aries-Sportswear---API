@@ -349,13 +349,13 @@ const orderDetails = async (req, res) => {
     /* Fetch order details with shipping information */
     const [orderRows] = await db.query(
       requestedByStaff
-        ? `SELECT id, user_id, payment_id, payment_status, 
+        ? `SELECT id, user_id, payment_id, payment_status, shipping_id,
                   shipping_fee, tax_amount, discount_amount,
                   shipping_name, shipping_phone, address_line1, address_line2,
                   landmark, city, state, country, postal_code, digipin
            FROM orders 
            WHERE id = ?`
-        : `SELECT id, user_id, payment_id, payment_status, 
+        : `SELECT id, user_id, payment_id, payment_status, shipping_id, 
                   shipping_fee, tax_amount, discount_amount,
                   shipping_name, shipping_phone, address_line1, address_line2,
                   landmark, city, state, country, postal_code, digipin
@@ -384,6 +384,7 @@ const orderDetails = async (req, res) => {
         user_id: order.user_id,
         payment_id: order.payment_id,
         payment_status: order.payment_status,
+        shipping_id: order.shipping_id,
         order_status: order.order_status,
         shipping_fee: (order.shipping_fee / 100).toFixed(2),
         tax_amount: (order.tax_amount / 100).toFixed(2),
@@ -453,6 +454,7 @@ const getAllOrders = async (req, res) => {
         o.shipping_fee,
         o.tax_amount,
         o.discount_amount,
+        o.shipping_id,
         o.shipping_name,
         o.shipping_phone,
         o.address_line1,
@@ -498,6 +500,7 @@ const getAllOrders = async (req, res) => {
           user_id: row.user_id,
           payment_id: row.payment_id,
           payment_status: row.payment_status,
+          shipping_id: row.shipping_id,
           shipping_fee: Number(row.shipping_fee || 0),
           tax_amount: Number(row.tax_amount || 0),
           discount_amount: Number(row.discount_amount || 0),
