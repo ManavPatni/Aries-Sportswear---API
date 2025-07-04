@@ -388,9 +388,9 @@ const orderDetails = async (req, res) => {
         payment_status: order.payment_status,
         shipping_id: order.shipping_id,
         order_status: order.order_status,
-        shipping_fee: (order.shipping_fee).toFixed(2),
-        tax_amount: (order.tax_amount).toFixed(2),
-        discount_amount: (order.discount_amount).toFixed(2),
+        shipping_fee: order.shipping_fee,
+        tax_amount: order.tax_amount,
+        discount_amount: order.discount_amount,
         coupon_id: order.coupon_id || null,
         shipping_address: {
           name: order.shipping_name,
@@ -410,7 +410,7 @@ const orderDetails = async (req, res) => {
           size: item.size || null,
           color: item.color || null,
           quantity: item.quantity,
-          unit_price: (item.unit_price).toFixed(2), // Convert paise to rupees
+          unit_price: item.unit_price,
           img_path: item.img_path ? `${IMAGE_BASE_URL}${item.img_path}` : null
         })),
         statuses: statuses.map(status => ({
