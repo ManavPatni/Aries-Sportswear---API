@@ -28,7 +28,7 @@ const getUsersKpi = async (req, res) => {
 
         const customersChange =
             previousCustomers === 0
-                ? null
+                ? '0%'
                 : ((currentCustomers - previousCustomers) / previousCustomers) * 100;
 
         // --- 2) New registered users in current period ---
