@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRouter');
+const analyticsRoutes = require('./routes/analyticsRouter');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/', productRoutes);
 app.use('/user', userRoutes);
 app.use('/staff', staffRoutes);
 app.use('/order', orderRoutes);
+app.use('/analytics', analyticsRoutes);
 
 // Health check endpoint
 app.get('/ping', (req, res) => {
