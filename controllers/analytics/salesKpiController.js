@@ -48,7 +48,7 @@ const getSalesKpi = async (req, res) => {
 
         // Calculate percentage change
         const calcChange = (current, previous) => {
-            if (previous === 0) return null;
+            if (previous === 0) return '0%';
             const change = ((current - previous) / previous) * 100;
             return (change > 0 ? '+' : '') + change.toFixed(0) + '%';
         };
