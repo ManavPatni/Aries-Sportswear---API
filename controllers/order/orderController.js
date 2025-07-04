@@ -443,7 +443,7 @@ const getAllOrders = async (req, res) => {
       params.push(status);
     }
 
-    const [rows] = await db.query(
+    const [rows] = await db.execute(
       `
       SELECT 
         o.id AS order_id,
