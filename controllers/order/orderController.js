@@ -287,7 +287,7 @@ const verifyPayment = async (req, res) => {
       title = 'New Order Received',
       description = `A new order #${order.order_id} has been placed.`,
       priority = 'high',
-      deeplink =`https://admin.ariessportswear.com/orders/${order.order_id}`,
+      deeplink =`https://admin.ariessportswear.com/orders/order-detail?orderid=${order.order_id}`,
       target = {
         type: 'all'
       }
