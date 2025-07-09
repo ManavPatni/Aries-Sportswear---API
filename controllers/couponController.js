@@ -1,4 +1,4 @@
-const db = require('../../db/database');
+const db = require('../db/database');
 
 // Create a new coupon
 const createCoupon = async (req, res) => {
@@ -87,7 +87,6 @@ const createCoupon = async (req, res) => {
 
 // Get all coupons
 const getAllCoupons = async (req, res) => {
-   
     try {
         const [rows] = await db.query('SELECT * FROM coupons');
         res.json(rows);
@@ -99,8 +98,8 @@ const getAllCoupons = async (req, res) => {
 
 // Update a coupon
 const updateCoupon = async (req, res) => {
-    const { id } = req.params;
     const {
+        id,
         code,
         discount_type,
         discount_value,
@@ -198,7 +197,7 @@ const updateCoupon = async (req, res) => {
 
 // Delete a coupon
 const deleteCoupon = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.body;
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
@@ -224,8 +223,109 @@ const deleteCoupon = async (req, res) => {
     }
 };
 
+async function validateCouponForOrder(coupon_code, userId, items, conn = null) {
+  const connection = conn || db;
+
+  // Input validation
+  if (!coupon_code || typeof coupon_code !== 'string') {
+    throw new Error('Invalid coupon_code');
+  }
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error('items must be a non-empty array');
+  }
+  for (const { variantId, quantity } of items) {
+    if (!Number.isInteger(variantId) || variantId <= 0 || !Number.isInteger(quantity) || quantity <= 0) {
+      throw new Error('Each item must have a positive integer variantId and quantity');
+    }
+  }
+
+  // Fetch coupon with row lock to prevent concurrent updates
+  const [coupons] = await connection.query('SELECT * FROM coupons WHERE code = ? FOR UPDATE', [coupon_code]);
+  if (coupons.length === 0) {
+    throw new Error('Coupon not found');
+  }
+  const coupon = coupons[0];
+
+  // Check basic coupon validity
+  if (!coupon.is_active) throw new Error('Coupon is inactive');
+  const now = new Date();
+  if (coupon.start_date && now < new Date(coupon.start_date)) throw new Error('Coupon not yet applicable');
+  if (coupon.end_date && now > new Date(coupon.end_date)) throw new Error('Coupon has expired');
+  if (coupon.usage_limit !== null && coupon.used_count >= coupon.usage_limit) throw new Error('Coupon usage limit reached');
+
+  // Fetch variant details including product_id and price
+  const variantIds = items.map(item => item.variantId);
+  const [variantRows] = await connection.query(
+    'SELECT v.id AS variant_id, v.product_id, v.price FROM variant v WHERE v.id IN (?)',
+    [variantIds]
+  );
+
+  // Validate that all requested variants exist
+  const variantMap = new Map(variantRows.map(v => [v.variant_id, v]));
+  const invalidVariants = items.filter(item => !variantMap.has(item.variantId));
+  if (invalidVariants.length > 0) {
+    throw new Error(`Invalid variant IDs: ${invalidVariants.map(v => v.variantId).join(', ')}`);
+  }
+
+  // Calculate total order amount in rupees
+  let totalOrderAmount = 0;
+  for (const { variantId, quantity } of items) {
+    const variant = variantMap.get(variantId);
+    totalOrderAmount += variant.price * quantity;
+  }
+
+  // Check minimum purchase amount
+  if (coupon.min_purchase_amount !== null && totalOrderAmount < coupon.min_purchase_amount) {
+    throw new Error(`Minimum purchase amount of ${coupon.min_purchase_amount} not met`);
+  }
+
+  // Fetch product IDs from variants
+  const productIds = [...new Set(variantRows.map(row => row.product_id))];
+
+  // Check coupon applicability
+  let isApplicable = false;
+  if (coupon.applies_to_type === 'all') {
+    isApplicable = true;
+  } else if (coupon.applies_to_type === 'subcategories') {
+    const [result] = await connection.query(
+      'SELECT COUNT(*) as count FROM products p JOIN coupon_subcategories cs ON p.sub_category_id = cs.sub_category_id WHERE cs.coupon_id = ? AND p.id IN (?)',
+      [coupon.coupon_id, productIds]
+    );
+    isApplicable = result[0].count > 0;
+  } else if (coupon.applies_to_type === 'products') {
+    const [result] = await connection.query(
+      'SELECT COUNT(*) as count FROM coupon_products cp WHERE cp.coupon_id = ? AND cp.product_id IN (?)',
+      [coupon.coupon_id, productIds]
+    );
+    isApplicable = result[0].count > 0;
+  }
+
+  if (!isApplicable) throw new Error('Coupon not applicable to these items');
+
+  // Check user-specific usage
+  if (userId) {
+    const [existingOrders] = await connection.query(
+      'SELECT COUNT(*) as count FROM orders WHERE user_id = ? AND coupon_code = ?',
+      [userId, coupon_code]
+    );
+    if (existingOrders[0].count > 0) {
+      throw new Error('Coupon already used by this user');
+    }
+  }
+
+  return {
+    id: coupon.coupon_id,
+    code: coupon.code,
+    discount_type: coupon.discount_type,
+    discount_value: coupon.discount_value,
+    min_purchase_amount: coupon.min_purchase_amount,
+  };
+};
+
 module.exports = {
     createCoupon,
+    getAllCoupons,
     updateCoupon,
-    deleteCoupon
+    deleteCoupon,
+    validateCouponForOrder
 };

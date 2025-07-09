@@ -7,6 +7,7 @@ const notificationController = new NotificationController(db);
 const { sendOrderConfirmationEmail } = require('../../utils/emailService');
 const orderItemsModel = require('../../models/order/orderItemsModel');
 const orderStatusModel = require('../../models/order/orderStatusModel');
+const { validateCouponForOrder } = require('../couponController');
 
 const IMAGE_BASE_URL = process.env.IMAGE_BASE_URL;
 
@@ -25,9 +26,8 @@ const createOrder = async (req, res) => {
   const userId = req.user.id;
   const shipping_fee = 0;    // In rupees
   const tax_amount = 0;      // In rupees
-  const discount_amount = 0; // In rupees
 
-  const { items, shipping_id, coupon_id = null } = req.body;
+  const { items, shipping_id, coupon_code = null } = req.body;
 
   /* ---------- 1. Basic Validation ---------- */
   if (!Array.isArray(items) || items.length === 0) {
@@ -47,7 +47,7 @@ const createOrder = async (req, res) => {
   const conn = await db.getConnection();
   await conn.beginTransaction();
 
-  let rzOrderId; // To track Razorpay order for cancellation if needed
+  let rzOrderId;
   try {
     const snapshots = [];
     let itemsTotalPaise = 0;
@@ -98,31 +98,45 @@ const createOrder = async (req, res) => {
       });
     }
 
-    /* ---------- 4. Apply Pricing in Paise ---------- */
+    /* ---------- 4. Coupon Validation and Discount Calculation ---------- */
+    let coupon = null;
+    let discountAmountPaise = 0;
+
+    if (coupon_code) {
+      coupon = await validateCouponForOrder(coupon_code, userId, items);
+      if (coupon.discount_type === 'percentage') {
+        discountAmountPaise = Math.round((itemsTotalPaise * coupon.discount_value) / 100);
+      } else if (coupon.discount_type === 'fixed') {
+        discountAmountPaise = Math.round(coupon.discount_value * 100); // discount_value in rupees
+      }
+      discountAmountPaise = Math.min(discountAmountPaise, itemsTotalPaise); // Cap at item total
+    }
+
+    /* ---------- 5. Apply Pricing in Paise ---------- */
     const shippingFeePaise = Math.round(shipping_fee * 100);
     const taxAmountPaise = Math.round(tax_amount * 100);
-    const discountAmountPaise = Math.round(discount_amount * 100);
     const grandTotalPaise = itemsTotalPaise + shippingFeePaise + taxAmountPaise - discountAmountPaise;
 
     if (grandTotalPaise <= 0) throw new Error('Calculated order total is invalid');
 
-    /* ---------- 5. Create Razorpay Order ---------- */
+    /* ---------- 6. Create Razorpay Order ---------- */
     const rzOrder = await razorpay.orders.create({
-      amount: grandTotalPaise, // Amount in paise, ensured to be an integer
+      amount: grandTotalPaise,
       currency: 'INR',
       notes: { userId }
     });
     rzOrderId = rzOrder.id;
 
-    /* ---------- 6. Insert into Orders Table ---------- */
-
+    /* ---------- 7. Insert into Orders Table ---------- */
+    const discount_amount = discountAmountPaise / 100; // Convert to rupees for storage
     const [orderRes] = await conn.query(
       `INSERT INTO orders
        (user_id, payment_id, payment_status,
         shipping_fee, tax_amount, discount_amount,
+        coupon_code, discount_type,
         shipping_name, shipping_phone, address_line1, address_line2,
         landmark, city, state, country, postal_code, digipin)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [
         userId,
         rzOrderId,
@@ -130,6 +144,8 @@ const createOrder = async (req, res) => {
         shipping_fee,
         tax_amount,
         discount_amount,
+        coupon ? coupon.code : null,
+        coupon ? coupon.discount_type : null,
         shipping.name,
         shipping.phone,
         shipping.line1,
@@ -144,7 +160,7 @@ const createOrder = async (req, res) => {
     );
     const orderId = orderRes.insertId;
 
-    /* ---------- 7. Insert Order Items & Update Stock ---------- */
+    /* ---------- 8. Insert Order Items & Update Data ---------- */
     let updatedVariantIds = [];
     let lowStockItems = [];
 
@@ -165,7 +181,7 @@ const createOrder = async (req, res) => {
         snap.color,
         snap.img_path || null,
         snap.quantity,
-        snap.price // Stored in rupees
+        snap.price
       ]);
 
       await conn.query(
@@ -174,7 +190,6 @@ const createOrder = async (req, res) => {
       );
 
       updatedVariantIds.push(snap.variant_id);
-
     }
 
     if (updatedVariantIds.length > 0) {
@@ -182,51 +197,55 @@ const createOrder = async (req, res) => {
         `SELECT id, stock FROM variant WHERE id IN (${updatedVariantIds.map(() => '?').join(',')})`,
         updatedVariantIds
       );
-
-      // Get all variants where stock is now 0 or below
-      lowStockItems = stocks
-        .filter(v => v.stock <= 0)
-        .map(v => v.id);
+      lowStockItems = stocks.filter(v => v.stock <= 0).map(v => v.id);
     }
-    /* ---------- 8. Commit Transaction & notify for low stock---------- */
+
+    if (coupon !== null) {
+      await conn.query(
+          'UPDATE coupons SET used_count = used_count + 1 WHERE coupon_id = ?',
+          [coupon.id]
+      );
+    }
+
+    /* ---------- 9. Update Coupon Usage ---------- */
+    if (coupon) {
+      await conn.query('UPDATE coupons SET used_count = used_count + 1 WHERE coupon_id = ?', [coupon.coupon_id]);
+    }
+
+    /* ---------- 10. Commit Transaction & Notify for Low Stock ---------- */
     await conn.commit();
     conn.release();
 
-    // All Staff notification
-    await notificationController.createNotification(
-      type = 'stock',
-      title = 'Out of stock',
-      description = `Variant ids: ${lowStockItems.join(', ')} are out of stock.`,
-      priority = 'high',
-      deeplink = `https://admin.ariessportswear.com/products/product-list`,
-      target = {
-        type: 'all'
-      }
-    );
+    if (lowStockItems.length > 0) {
+      await notificationController.createNotification(
+        type = 'stock',
+        title = 'Out of stock',
+        description = `Variant ids: ${lowStockItems.join(', ')} are out of stock.`,
+        priority = 'high',
+        deeplink = `https://admin.ariessportswear.com/products/product-list`,
+        target = { type: 'all' }
+      );
+    }
 
     return res.status(201).json({
       success: true,
       orderId,
       paymentId: rzOrderId,
-      amount: grandTotalPaise / 100, // Convert back to rupees for response
+      amount: grandTotalPaise / 100,
       currency: 'INR',
       razorpayKey: process.env.RAZORPAY_KEY_ID
     });
 
   } catch (err) {
-    /* ---------- 9. Rollback & Cleanup ---------- */
     await conn.rollback();
     conn.release();
-
-    // Cancel Razorpay order if created
     try {
       if (rzOrderId) await razorpay.orders.cancel(rzOrderId);
-    } catch (_) { /* Ignore cancellation errors */ }
-
+    } catch (_) {}
     console.error('createOrder error:', err);
     return res.status(400).json({ error: err.message });
   }
-};
+}
 
 const verifyPayment = async (req, res) => {
   const userId = req.user.id;
