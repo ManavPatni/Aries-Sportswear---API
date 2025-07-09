@@ -711,8 +711,9 @@ const updateOrderStatus = async (req, res) => {
 
 // Delete pending orders older than 1 day also reset stock for those orders
 const deletePendingOrder = async () => {
+  let conn;
   try {
-    const conn = await db.getConnection();
+    conn = await db.getConnection();
     await conn.beginTransaction();
 
     const [orders] = await conn.query(
@@ -721,14 +722,23 @@ const deletePendingOrder = async () => {
 
     if (orders.length === 0) {
       await conn.rollback();
-      return res.status(404).json({ success: false, message: 'No pending orders found to delete' });
+      console.log('No pending orders found to delete');
+      return;
     }
 
-    // Reset stock for deleted orders
     const orderIds = orders.map(order => order.id);
+
+    // Reset stock for deleted orders using a JOIN for efficiency
     await conn.query(
-      `UPDATE variant SET stock = stock + (SELECT quantity FROM order_items WHERE order_id IN (?)) WHERE id IN (SELECT variant_id FROM order_items WHERE order_id IN (?))`,
-      [orderIds, orderIds]
+      `UPDATE variant v
+       JOIN (
+         SELECT oi.variant_id, SUM(oi.quantity) as total_quantity
+         FROM order_items oi
+         WHERE oi.order_id IN (?)
+         GROUP BY oi.variant_id
+       ) AS sums ON v.id = sums.variant_id
+       SET v.stock = v.stock + sums.total_quantity`,
+      [orderIds]
     );
 
     // Delete the orders
@@ -738,12 +748,18 @@ const deletePendingOrder = async () => {
     );
 
     await conn.commit();
-    return res.status(200).json({ success: true, message: 'Pending orders deleted and stock reset' });
+    console.log('Pending orders deleted and stock reset');
   } catch (error) {
     console.error('deletePendingOrder error:', error);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    if (conn) {
+      await conn.rollback();
+    }
+  } finally {
+    if (conn) {
+      await conn.release();
+    }
   }
-}
+};
 
 module.exports = { 
   createOrder,

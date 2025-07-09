@@ -42,7 +42,7 @@ const createCoupon = async (req, res) => {
             return res.status(400).json({ error: 'product_ids must be a non-empty array for applies_to_type "products"' });
         }
         // Check if product_ids exist
-        const [existingProducts] = await db.query('SELECT id FROM products WHERE id IN (?)', [product_ids]);
+        const [existingProducts] = await db.query('SELECT id FROM product WHERE id IN (?)', [product_ids]);
         const existingIds = existingProducts.map(row => row.id);
         const invalidIds = product_ids.filter(id => !existingIds.includes(id));
         if (invalidIds.length > 0) {
@@ -132,7 +132,7 @@ const updateCoupon = async (req, res) => {
             if (!product_ids || !Array.isArray(product_ids) || product_ids.length === 0) {
                 return res.status(400).json({ error: 'product_ids must be a non-empty array' });
             }
-            const [existingProducts] = await db.query('SELECT id FROM products WHERE id IN (?)', [product_ids]);
+            const [existingProducts] = await db.query('SELECT id FROM product WHERE id IN (?)', [product_ids]);
             const existingIds = existingProducts.map(row => row.id);
             const invalidIds = product_ids.filter(id => !existingIds.includes(id));
             if (invalidIds.length > 0) {
@@ -288,7 +288,7 @@ async function validateCouponForOrder(coupon_code, userId, items, conn = null) {
     isApplicable = true;
   } else if (coupon.applies_to_type === 'subcategories') {
     const [result] = await connection.query(
-      'SELECT COUNT(*) as count FROM products p JOIN coupon_subcategories cs ON p.sub_category_id = cs.sub_category_id WHERE cs.coupon_id = ? AND p.id IN (?)',
+      'SELECT COUNT(*) as count FROM product p JOIN coupon_subcategories cs ON p.sub_category_id = cs.sub_category_id WHERE cs.coupon_id = ? AND p.id IN (?)',
       [coupon.coupon_id, productIds]
     );
     isApplicable = result[0].count > 0;
