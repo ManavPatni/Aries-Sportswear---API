@@ -115,6 +115,7 @@ const createOrder = async (req, res) => {
     rzOrderId = rzOrder.id;
 
     /* ---------- 6. Insert into Orders Table ---------- */
+
     const [orderRes] = await conn.query(
       `INSERT INTO orders
        (user_id, payment_id, payment_status,
@@ -144,6 +145,9 @@ const createOrder = async (req, res) => {
     const orderId = orderRes.insertId;
 
     /* ---------- 7. Insert Order Items & Update Stock ---------- */
+    let updatedVariantIds = [];
+    let lowStockItems = [];
+
     const itemSQL = `INSERT INTO order_items
                      (order_id, product_id, variant_id, product_name,
                       variant_name, size, color, img_path,
@@ -168,23 +172,37 @@ const createOrder = async (req, res) => {
         'UPDATE variant SET stock = stock - ? WHERE id = ?',
         [snap.quantity, snap.variant_id]
       );
+
+      updatedVariantIds.push(snap.variant_id);
+
     }
 
+    if (updatedVariantIds.length > 0) {
+      const [stocks] = await conn.query(
+        `SELECT id, stock FROM variant WHERE id IN (${updatedVariantIds.map(() => '?').join(',')})`,
+        updatedVariantIds
+      );
+
+      // Get all variants where stock is now 0 or below
+      lowStockItems = stocks
+        .filter(v => v.stock <= 0)
+        .map(v => v.id);
+    }
     /* ---------- 8. Commit Transaction & notify for low stock---------- */
     await conn.commit();
     conn.release();
 
-    // // Admin notification
-    // await notificationController.createNotification(
-    //   type = 'stock',
-    //   title = 'Low stock Alert',
-    //   description = `A new order #${order.order_id} has been placed.`,
-    //   priority = 'high',
-    //   deeplink =`https://admin.ariessportswear.com/orders/${order.order_id}`,
-    //   target = {
-    //     type: 'all'
-    //   }
-    // );
+    // All Staff notification
+    await notificationController.createNotification(
+      type = 'stock',
+      title = 'Out of stock',
+      description = `Variant ids: ${lowStockItems.join(', ')} are out of stock.`,
+      priority = 'high',
+      deeplink = `https://admin.ariessportswear.com/products/product-list`,
+      target = {
+        type: 'all'
+      }
+    );
 
     return res.status(201).json({
       success: true,
@@ -281,12 +299,12 @@ const verifyPayment = async (req, res) => {
     const items = await orderItemsModel.getOrderItems(order.order_id, conn);
 
     /* ---------- 4. Create Notifications ---------- */
-    // Admin notification
+    // All staff notification
     await notificationController.createNotification(
       type = 'order',
       title = 'New Order Received',
       description = `A new order #${order.order_id} has been placed.`,
-      priority = 'high',
+      priority = 'medium',
       deeplink =`https://admin.ariessportswear.com/orders/order-detail?orderid=${order.order_id}`,
       target = {
         type: 'all'
@@ -670,10 +688,47 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// Delete pending orders older than 1 day also reset stock for those orders
+const deletePendingOrder = async () => {
+  try {
+    const conn = await db.getConnection();
+    await conn.beginTransaction();
+
+    const [orders] = await conn.query(
+      `SELECT id FROM orders WHERE payment_status = 'Pending' AND updated_at < NOW() - INTERVAL 1 DAY`
+    );
+
+    if (orders.length === 0) {
+      await conn.rollback();
+      return res.status(404).json({ success: false, message: 'No pending orders found to delete' });
+    }
+
+    // Reset stock for deleted orders
+    const orderIds = orders.map(order => order.id);
+    await conn.query(
+      `UPDATE variant SET stock = stock + (SELECT quantity FROM order_items WHERE order_id IN (?)) WHERE id IN (SELECT variant_id FROM order_items WHERE order_id IN (?))`,
+      [orderIds, orderIds]
+    );
+
+    // Delete the orders
+    await conn.query(
+      `DELETE FROM orders WHERE id IN (?)`,
+      [orderIds]
+    );
+
+    await conn.commit();
+    return res.status(200).json({ success: true, message: 'Pending orders deleted and stock reset' });
+  } catch (error) {
+    console.error('deletePendingOrder error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
 module.exports = { 
   createOrder,
   verifyPayment,
   orderDetails,
   getAllOrders,
-  updateOrderStatus
+  updateOrderStatus,
+  deletePendingOrder
 };
