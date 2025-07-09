@@ -4,6 +4,7 @@ const verifyOtp = require('../middleware/otpMiddleware');
 const authController = require('../controllers/user/authController');
 const profileController = require('../controllers/user/profileController');
 const cartController = require('../controllers/user/cartController');
+const { validateCouponForOrder } = require('../controllers/couponController');
 
 const router = express.Router();
 
@@ -38,5 +39,16 @@ router.post('/shipping-address', authenticateToken, profileController.addShippin
 router.get('/shipping-address', authenticateToken, profileController.getShippingAddress);
 router.put('/shipping-address', authenticateToken, profileController.updateShippingAddress);
 router.delete('/shipping-address', authenticateToken, profileController.deleteShippingAddress);
+
+// --- Coupon ---
+router.post('/validate-coupon', authenticateToken, async (req, res) => {
+  const { coupon_code, items } = req.body;
+  try {
+    const coupon = await validateCouponForOrder(coupon_code, req.user.id, items);
+    res.json({ success: true, coupon });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
 
 module.exports = router;

@@ -6,6 +6,7 @@ const profileController = require('../controllers/staff/profileController');
 const staffController = require('../controllers/staff/staffController');
 const NotificationController = require('../controllers/NotificationController');
 const notificationController = new NotificationController(db);
+const couponController = require('../controllers/couponController');
 
 const router = express.Router();
 
@@ -68,6 +69,13 @@ router.delete('/notification', authenticateToken, async (req, res) => {
         return res.status(400).json({ message: err.message });
     }
 });
+
+
+// --- Coupon Management ---
+router.post('/coupon', authenticateToken, couponController.createCoupon);
+router.get('/coupon', authenticateToken, couponController.getAllCoupons);
+router.put('/coupon', authenticateToken, couponController.updateCoupon);
+router.delete('/coupon', authenticateToken, couponController.deleteCoupon);
 
 // --- Manage staff ---
 router.post('/', authenticateToken, staffController.addStaffMember);

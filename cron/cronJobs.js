@@ -1,5 +1,6 @@
 const cron = require('node-cron');
-const db = require('../db/database'); // Assuming this is your mysql2/promise pool
+const db = require('../db/database');
+const orderController = require('../controllers/order/orderController');
 
 /**
  * A helper function to create a cron task with standardized logging and error handling.
@@ -28,7 +29,7 @@ const createCronTask = (schedule, taskName, taskFunction) => {
 // 1. Daily Cleanup at midnight
 createCronTask(
   '0 0 * * *',
-  'Daily Refresh Token Cleanup',
+  'Daily Refresh Token & Pending Order Cleanup',
   (database) => {
     // Running as two separate queries is safer than enabling multi-statement support.
     const query1 = 'DELETE FROM user_refresh_tokens WHERE expires_at < NOW();';
@@ -47,6 +48,15 @@ createCronTask(
   (database) => {
     const query = 'DELETE FROM otp_request WHERE expires_at < NOW();';
     return database.query(query);
+  }
+);
+
+// 3. Pending Order Cleanup every day at 00:30AM
+createCronTask(
+  '30 0 * * *',
+  'Pending Order Cleanup',
+  async () => {
+    await orderController.deletePendingOrder();
   }
 );
 
