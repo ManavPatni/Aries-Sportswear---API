@@ -389,13 +389,13 @@ const orderDetails = async (req, res) => {
     const [orderRows] = await db.query(
       requestedByStaff
         ? `SELECT id, user_id, payment_id, payment_status, shipping_id,
-                  shipping_fee, tax_amount, discount_amount,
+                  coupon_code, discount_type, shipping_fee, tax_amount, discount_amount,
                   shipping_name, shipping_phone, address_line1, address_line2,
                   landmark, city, state, country, postal_code, digipin
            FROM orders 
            WHERE id = ?`
         : `SELECT id, user_id, payment_id, payment_status, shipping_id, 
-                  shipping_fee, tax_amount, discount_amount,
+                  coupon_code, discount_type, shipping_fee, tax_amount, discount_amount,
                   shipping_name, shipping_phone, address_line1, address_line2,
                   landmark, city, state, country, postal_code, digipin
            FROM orders 
@@ -427,6 +427,8 @@ const orderDetails = async (req, res) => {
         order_status: order.order_status,
         shipping_fee: order.shipping_fee,
         tax_amount: order.tax_amount,
+        coupon_code: order.coupon_code || null,
+        discount_type: order.discount_type || null,
         discount_amount: order.discount_amount,
         coupon_id: order.coupon_id || null,
         shipping_address: {
