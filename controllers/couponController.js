@@ -88,8 +88,18 @@ const createCoupon = async (req, res) => {
 // Get all coupons
 const getAllCoupons = async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM coupons');
-        res.json(rows);
+        const [coupons] = await db.query(`
+            SELECT c.coupon_id, c.code, c.discount_type, c.discount_value, c.min_purchase_amount,
+                   c.start_date, c.end_date, c.usage_limit, c.used_count, c.is_active,
+                   c.applies_to_type,
+                   GROUP_CONCAT(DISTINCT cs.sub_category_id) AS sub_category_ids,
+                   GROUP_CONCAT(DISTINCT cp.product_id) AS product_ids
+            FROM coupons c
+            LEFT JOIN coupon_subcategories cs ON c.coupon_id = cs.coupon_id
+            LEFT JOIN coupon_products cp ON c.coupon_id = cp.coupon_id
+            GROUP BY c.coupon_id
+        `);
+        res.json(coupons);
     } catch (error) {
         console.error('Error fetching coupons:', error);
         res.status(500).json({ error: 'Database error' });
