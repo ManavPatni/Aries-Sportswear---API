@@ -84,25 +84,30 @@ const createCoupon = async (req, res) => {
     }
 };
 
-
-// Get all coupons
+// Get all coupons 
 const getAllCoupons = async (req, res) => {
     try {
         const [coupons] = await db.query(`
-            SELECT c.coupon_id, c.code, c.discount_type, c.discount_value, c.min_purchase_amount,
-                   c.start_date, c.end_date, c.usage_limit, c.used_count, c.is_active,
-                   c.applies_to_type,
-                   GROUP_CONCAT(DISTINCT cs.sub_category_id) AS sub_category_ids,
-                   GROUP_CONCAT(DISTINCT cp.product_id) AS product_ids
+            SELECT c.*, 
+                GROUP_CONCAT(DISTINCT cs.sub_category_id) AS sub_category_ids,
+                GROUP_CONCAT(DISTINCT cp.product_id) AS product_ids
             FROM coupons c
             LEFT JOIN coupon_subcategories cs ON c.coupon_id = cs.coupon_id
             LEFT JOIN coupon_products cp ON c.coupon_id = cp.coupon_id
             GROUP BY c.coupon_id
         `);
-        res.json(coupons);
+        
+        // Format the response to include sub_category_ids and product_ids as arrays
+        const formattedCoupons = coupons.map(coupon => ({
+            ...coupon,
+            sub_category_ids: coupon.sub_category_ids ? coupon.sub_category_ids.split(',').map(Number) : [],
+            product_ids: coupon.product_ids ? coupon.product_ids.split(',').map(Number) : []
+        }));
+
+        res.json(formattedCoupons);
     } catch (error) {
         console.error('Error fetching coupons:', error);
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
