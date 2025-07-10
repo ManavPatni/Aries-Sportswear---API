@@ -2,6 +2,9 @@ const db = require('../db/database');
 
 // Create a new coupon
 const createCoupon = async (req, res) => {
+    const staffId = req.staff?.id;
+    if (!staffId) return res.status(404).json({ message: 'Unauthorized'});
+
     const {
         code,
         discount_type,
@@ -86,6 +89,9 @@ const createCoupon = async (req, res) => {
 
 // Get all coupons 
 const getAllCoupons = async (req, res) => {
+    const staffId = req.staff?.id;
+    if (!staffId) return res.status(404).json({ message: 'Unauthorized'});
+
     try {
         const [coupons] = await db.query(`
             SELECT c.*, 
@@ -113,6 +119,9 @@ const getAllCoupons = async (req, res) => {
 
 // Update a coupon
 const updateCoupon = async (req, res) => {
+    const staffId = req.staff?.id;
+    if (!staffId) return res.status(404).json({ message: 'Unauthorized' });
+
     const {
         id,
         code,
@@ -212,7 +221,11 @@ const updateCoupon = async (req, res) => {
 
 // Delete a coupon
 const deleteCoupon = async (req, res) => {
+    const staffId = req.staff?.id;
     const { id } = req.body;
+
+    if (!staffId) return res.status(404).json({ message: 'Unauthorized' });
+
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
