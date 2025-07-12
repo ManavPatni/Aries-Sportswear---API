@@ -227,6 +227,7 @@ const getAllOrders = async(req, res) => {
       `
       SELECT
         o.id AS order_id,
+        o.payment_id,
         o.payment_status,
         o.shipping_fee,
         o.tax_amount,
@@ -263,6 +264,11 @@ const getAllOrders = async(req, res) => {
     const orders = rows.map(row => ({
       id             : row.order_id,
       payment_status : row.payment_status,
+      ...(row.payment_status === 'Pending' && {
+        payment_id   : row.payment_id,
+        currency     : 'INR',
+        razorpayKey  : process.env.RAZORPAY_KEY_ID,
+      }),
       current_status : row.current_status ?? null,
       item_count     : Number(row.item_count ?? 0),
       total_amount   : Number(
