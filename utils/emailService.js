@@ -15,9 +15,9 @@ exports.sendOrderConfirmationEmail = async (to, orderDetails) => {
     return false;
   }
 
-  const { orderId, items, total } = orderDetails;
+  const { orderId, items } = orderDetails;
 
-  if (!orderId || !Array.isArray(items) || items.length === 0 || typeof total !== 'number') {
+  if (!orderId || !Array.isArray(items) || items.length === 0) {
     return false;
   }
 
@@ -76,8 +76,8 @@ exports.sendOrderConfirmationEmail = async (to, orderDetails) => {
             Total: ₹${total.toFixed(2)}
           </div>
           <div style="text-align: center;">
-            <a href="https://ariessportswear.com/order/${orderId}" style="display: inline-block; background: #1a73e8; color: #ffffff; font-size: 14px; font-weight: 500; text-decoration: none; padding: 12px 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-              View Order Status
+            <a href="https://ariessportswear.com/track-order?orderid=${orderId}" style="display: inline-block; background: #1a73e8; color: #ffffff; font-size: 14px; font-weight: 500; text-decoration: none; padding: 12px 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+              Track Order
             </a>
           </div>
         </div>
