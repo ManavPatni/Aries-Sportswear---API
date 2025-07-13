@@ -15,6 +15,7 @@ const ORDER_FLOW = [
   'Ordered',
   'Shipping',
   'Out for delivery',
+  'Delivered',
   'Returned',
   'Replace',
   'Refunded',
@@ -324,7 +325,7 @@ const verifyPayment = async (req, res) => {
       title = 'New Order Received',
       description = `A new order #${order.order_id} has been placed.`,
       priority = 'medium',
-      deeplink =`https://admin.ariessportswear.com/orders/order-detail?orderid=${order.order_id}`,
+      deeplink =`https://admin.ariessportswear.com/order-detail?orderid=${order.order_id}`,
       target = {
         type: 'all'
       }
@@ -341,8 +342,7 @@ const verifyPayment = async (req, res) => {
         quantity: item.quantity,
         unit_price: item.unit_price,
         img_path: item.img_path ? `${IMAGE_BASE_URL}${item.img_path}` : null
-      })),
-      total: order.grand_total / 100
+      }))
     });
 
     if (!emailSent) {

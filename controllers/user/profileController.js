@@ -223,7 +223,7 @@ const getAllOrders = async(req, res) => {
   const { offset = 0, limit = 10 } = req.query;
 
   try {
-    const [rows] = await db.query(
+    const [rows] = await db.execute(
       `
       SELECT
         o.id AS order_id,
