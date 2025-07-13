@@ -47,6 +47,8 @@ exports.sendOrderConfirmationEmail = async (to, orderDetails) => {
       </td>
     </tr>
   `).join('');
+  
+  const total = items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
 
   const html = `
     <div style="font-family: 'Google Sans', Roboto, Arial, sans-serif; background: #f4f4f5; padding: 24px;">
