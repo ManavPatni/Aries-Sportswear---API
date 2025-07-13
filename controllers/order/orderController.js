@@ -15,6 +15,7 @@ const ORDER_FLOW = [
   'Ordered',
   'Shipping',
   'Out for delivery',
+  'Delivered',
   'Returned',
   'Replace',
   'Refunded',
